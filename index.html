@@ -5,7 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>✨ Rich Bot v2.0 ✨</title>
-     <script src='//whephiwums.com/sdk.js' data-zone='8996889' data-sdk='show_8996889'></script>    <style>
+     <script src='//whephiwums.com/sdk.js' data-zone='8996889' data-sdk='show_8996889'></script>
+    <style>
       #withdrawForm {
     display: none;}
         body {
@@ -16,6 +17,34 @@
             padding-top: 0px;
             position: relative;
         }
+    /* Posisi Balance di Bawah Judul */
+#balanceContainer {
+    display: flex;          /* Menjadikan flexbox */
+    align-items: center;    /* Pusatkan vertikal */
+    gap: 8px;               /* Jarak antara ikon dan bar */
+    margin-top: 10px;       /* Beri jarak dari judul */
+    justify-content: center; /* Tengah secara horizontal */
+}
+
+/* Progress Bar (Saldo Bot) */
+#balanceBar {
+    width: 150px;          /* Lebar progress bar */
+    height: 12px;          /* Tinggi progress bar */
+    appearance: none;      /* Hilangkan gaya default */
+    border-radius: 10px;   /* Sudut membulat */
+}
+
+/* Warna Dinamis di Progress Bar */
+#balanceBar::-webkit-progress-bar {
+    background: #333; /* Warna latar */
+    border-radius: 10px;
+}
+
+#balanceBar::-webkit-progress-value {
+    background: linear-gradient(90deg, #32CD32, #006400); /* Gradasi hijau */
+    border-radius: 10px;
+    transition: width 0.5s ease; /* Animasi perubahan */
+}
     
     /* kotak akun */
         .container {
@@ -243,6 +272,9 @@
 <body>
 
     <h1>✨ Rich Bot v2.0 ✨</h1>
+    <div id="balanceContainer">
+    💼 <progress id="balanceBar" value="100" max="100"></progress>
+</div>
 
     <!-- Form Input Nama dan Username -->
     <div id="formInput" class="container hidden">
@@ -313,6 +345,38 @@ window.onload = function () {
     resetTontonanSetiapHari();
     tampilkanRiwayat();
 };
+        // Inisialisasi balance bot (default 150000)
+let botBalance = localStorage.getItem(prefixV2 + 'botBalance') ? parseInt(localStorage.getItem(prefixV2 + 'botBalance')) : 150000;
+
+// Batas maksimal saldo bot
+const maxBalance = 200000;
+
+// Perbarui tampilan progress bar
+function updateBalanceBar() {
+    const percentage = (botBalance / maxBalance) * 100;
+    document.getElementById('balanceBar').value = percentage; 
+}
+
+// Fungsi untuk mengatur saldo bot
+function updateBotBalance(amount) {
+    botBalance += amount; 
+    botBalance = Math.max(0, Math.min(botBalance, maxBalance)); 
+    localStorage.setItem(prefixV2 + 'botBalance', botBalance); 
+    updateBalanceBar(); 
+}
+
+// Jalankan saat halaman dimuat
+updateBalanceBar();
+
+// Contoh: Kurangi saldo bot
+function cairkanSaldo(jumlah) {
+    if (jumlah <= botBalance) {
+        updateBotBalance(-jumlah);
+        alert(`Penarikan Rp ${jumlah} berhasil!`);
+    } else {
+        alert('Saldo bot tidak mencukupi!');
+    }
+}
 
 // Fungsi untuk mengambil data Telegram (khusus RICHBOT v2.0)
 function ambilDataTelegram() {
@@ -341,20 +405,23 @@ function simpanData() {
 
       // Fungsi untuk menampilkan data yang sudah disimpan
 function tampilkanData() {
-    document.getElementById('nama').textContent = localStorage.getItem('richbot_v2_nama');
-    document.getElementById('username').textContent = localStorage.getItem('richbot_v2_username');
+    document.getElementById('nama').textContent = localStorage.getItem(prefixV2 + 'nama') || 'Nama Tidak Ditemukan';
+    document.getElementById('username').textContent = localStorage.getItem(prefixV2 + 'username') || 'Username Tidak Ditemukan';
     document.getElementById('formInput').classList.add('hidden');
     document.getElementById('mainContent').classList.remove('hidden');
 }
 
+// Fungsi untuk memuat data saldo dan jumlah iklan ditonton
 function muatDataPendapatan() {
-    document.getElementById('saldo').textContent = localStorage.getItem('richbot_v2_saldo') || 0;
-    document.getElementById('ads-watched').textContent = localStorage.getItem('richbot_v2_adsWatched') || 0;
+    document.getElementById('saldo').textContent = localStorage.getItem(prefixV2 + 'saldo') || 0;
+    document.getElementById('ads-watched').textContent = localStorage.getItem(prefixV2 + 'adsWatched') || 0;
 }
 
+// Fungsi untuk menonton iklan
 function tontonIklan() {
-    let adsWatched = parseInt(localStorage.getItem('richbot_v2_adsWatched')) || 0;
-
+    let adsWatched = parseInt(localStorage.getItem(prefixV2 + 'adsWatched')) || 0;
+    let saldo = parseInt(localStorage.getItem(prefixV2 + 'saldo')) || 0;
+    
     // Validasi maksimal 39 kali per hari
     if (adsWatched >= 39) {
         alert('limit tercapai. besok lagi ya !!!');
@@ -391,7 +458,7 @@ function mulaiTimerIklan(detik) {
            // Update pendapatan setelah timer selesai
 updatePendapatan();
 // Cek kembali batas 39 tontonan
-let adsWatched = parseInt(localStorage.getItem('richbot_v2_adsWatched')) || 0;
+let adsWatched = parseInt(localStorage.getItem(prefixV2 + 'adsWatched')) || 0;
 if (adsWatched >= 39) {
     tombol.innerHTML = '🚫 Batas Tercapai';
     tombol.disabled = true;
@@ -403,25 +470,25 @@ if (adsWatched >= 39) {
 
   function updatePendapatan() {
     // Ambil saldo dan jumlah iklan ditonton dari localStorage khusus RICHBOT v2.0, default 0 jika null
-    let saldo = parseInt(localStorage.getItem('richbot_v2_saldo')) || 0;
-    let adsWatched = parseInt(localStorage.getItem('richbot_v2_adsWatched')) || 0;
-
+    let saldo = parseInt(localStorage.getItem(prefixV2 + 'saldo')) || 0;
+    let adsWatched = parseInt(localStorage.getItem(prefixV2 + 'adsWatched')) || 0;
+      
     // Tambah pendapatan dan jumlah tontonan
     saldo += 13; // Tambah saldo sebesar 13
     adsWatched += 1; // Tambah jumlah iklan yang ditonton
 
     // Simpan kembali ke localStorage khusus RICHBOT v2.0
-    localStorage.setItem('richbot_v2_saldo', saldo);
-    localStorage.setItem('richbot_v2_adsWatched', adsWatched);
-
+     localStorage.setItem(prefixV2 + 'saldo', saldo);
+    localStorage.setItem(prefixV2 + 'adsWatched', adsWatched);
+      
     // Perbarui tampilan pendapatan di halaman
     muatDataPendapatan();
 }
 
 // Fungsi untuk menampilkan saldo dan jumlah iklan di halaman
 function muatDataPendapatan() {
-    const saldo = localStorage.getItem('richbot_v2_saldo') || 0;
-    const adsWatched = localStorage.getItem('richbot_v2_adsWatched') || 0;
+    const saldo = localStorage.getItem(prefixV2 + 'saldo') || 0;
+    const adsWatched = localStorage.getItem(prefixV2 + 'adsWatched') || 0;
 
     // Tampilkan di elemen HTML
     document.getElementById('saldo').textContent = `Rp ${saldo}`;
@@ -438,12 +505,22 @@ function toggleHistory() {
     history.style.display = history.style.display === 'none' ? 'block' : 'none';
 }
 
+// Fungsi reset jumlah tontonan secara otomatis setiap pukul 00:00
 function resetTontonanSetiapHari() {
-    const today = new Date().toLocaleDateString();
-    if (localStorage.getItem('richbot_v2_lastReset') !== today) {
-        localStorage.setItem('richbot_v2_adsWatched', '0');
-        localStorage.setItem('richbot_v2_lastReset', today);
-        muatDataPendapatan();
+    const sekarang = new Date();
+    const waktuSekarang = sekarang.getTime(); // Timestamp saat ini (dalam milidetik)
+    const waktuResetSebelumnya = parseInt(localStorage.getItem(prefixV2 + 'lastReset')) || 0;
+
+    // Cek apakah sudah melewati pukul 00:00
+    const pukul00 = new Date();
+    pukul00.setHours(0, 0, 0, 0); // Set pukul 00:00:00
+    const waktuPukul00 = pukul00.getTime();
+
+    // Jika waktu saat ini sudah melewati pukul 00:00 dan belum di-reset hari ini
+    if (waktuSekarang >= waktuPukul00 && waktuResetSebelumnya < waktuPukul00) {
+        localStorage.setItem(prefixV2 + 'adsWatched', '0'); // Reset jumlah tontonan
+        localStorage.setItem(prefixV2 + 'lastReset', waktuSekarang); // Simpan waktu reset
+        muatDataPendapatan(); // Update tampilan
     }
 }
         
@@ -458,7 +535,7 @@ function kirimPenarikan() {
     const namaDANA = document.getElementById('namaDANA').value.trim();
     const noDANA = document.getElementById('noDANA').value.trim();
     const jumlah = parseInt(document.getElementById('jumlah').value);
-    const saldo = parseInt(localStorage.getItem('richbot_v2_saldo') || 0);
+    const saldo = parseInt(localStorage.getItem(prefixV2 + 'saldo') || 0);
 
     // Validasi input
     if (namaDANA.length < 3 || noDANA.length < 10 || noDANA.length > 13 || jumlah % 1000 !== 0) {
@@ -471,8 +548,8 @@ function kirimPenarikan() {
     }
 
     // Ambil data pengguna dari localStorage
-    const nama = localStorage.getItem('richbot_v2_nama') || 'Tidak Ada Nama';
-    const username = localStorage.getItem('richbot_v2_username') || 'Tidak Ada Username';
+      const nama = localStorage.getItem(prefixV2 + 'nama') || 'Tidak Ada Nama';
+    const username = localStorage.getItem(prefixV2 + 'username') || 'Tidak Ada Username';
     const id = document.getElementById('id').textContent;
  // Hitung sisa saldo setelah penarikan
     const sisaSaldo = saldo - jumlah;
@@ -481,11 +558,11 @@ function kirimPenarikan() {
     console.log('Nama DANA:', namaDANA);
 
     // Update saldo
-    localStorage.setItem('richbot_v2_saldo', saldo - jumlah);
+    localStorage.setItem(prefixV2 + 'saldo', saldo - jumlah);
     document.getElementById('saldo').textContent = saldo - jumlah;
 
     // Simpan riwayat lengkap di localStorage
-    const riwayat = JSON.parse(localStorage.getItem('richbot_v2_riwayat') || '[]');
+    const riwayat = JSON.parse(localStorage.getItem(prefixV2 + 'riwayat') || '[]');
     const waktu = new Date().toLocaleString('id-ID');
 
     riwayat.push({
@@ -500,14 +577,14 @@ function kirimPenarikan() {
         brand:'rcbt v2.0'
     });
 
-    localStorage.setItem('richbot_v2_riwayat', JSON.stringify(riwayat));
+    localStorage.setItem(prefixV2 + 'riwayat', JSON.stringify(riwayat));
     alert('Penarikan berhasil dikirim!');
     tampilkanRiwayat();
 }
 
 // Fungsi menampilkan riwayat lengkap
 function tampilkanRiwayat() {
-    const riwayat = JSON.parse(localStorage.getItem('richbot_v2_riwayat') || '[]');
+    const riwayat = JSON.parse(localStorage.getItem(prefixV2 + 'riwayat') || '[]');
     const riwayatList = document.getElementById('riwayat');
     riwayatList.innerHTML = '';
     
