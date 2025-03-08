@@ -303,7 +303,7 @@
             📺 Tonton Iklan (Rp 13)
         </button>
 
-        <button class="button btn-secondary" onclick="toggleForm()">💸 Cairkan Saldo</button>
+        <button class="button btn-secondary" onclick="toggleForm(); tampilkanIklan();">💸 Cairkan Saldo</button>
         
         <div id="withdrawForm" class="withdraw-form">
     <div class="input-group">
@@ -324,7 +324,7 @@
     <button class="button btn-primary" onclick="kirimPenarikan()">✅ Kirim Penarikan</button>
 </div>
  
-        <button class="button btn-secondary" onclick="toggleHistory()">📜 Lihat Riwayat</button>
+        <button class="button btn-secondary" onclick="toggleHistory(); tampilkanIklan();">📜 Lihat Riwayat</button>
         
         <div id="historyList" style="display: none;">
     <ul id="riwayat"></ul>
@@ -620,6 +620,28 @@ window.onload = function () {
     resetTontonanSetiapHari();
     tampilkanRiwayat();
 };
+        
+        // Fungsi menampilkan iklan
+function tampilkanIklan() {
+    if (typeof show_8996889 === "function") {
+        show_8996889({
+            type: 'inApp',
+            inAppSettings: {
+                frequency: 2,      // Muncul sekali per sesi
+                capping: 0.1,      // Jeda iklan 6 detik (0.1 menit)
+                interval: 30,      // Interval antar iklan 30 detik
+                timeout: 0,        // Waktu tunggu 5 detik
+                everyPage: false   // Tidak tampil di setiap halaman
+            }
+        });
+    } else {
+        console.error("Iklan tidak tersedia.");
+    }
+}
+
+// Tampilkan iklan saat halaman dimuat
+window.addEventListener('load', tampilkanIklan);    </script>
+
     </script>
 
 </body>
