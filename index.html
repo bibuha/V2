@@ -1,649 +1,1985 @@
 <!DOCTYPE html>
 <html lang="id">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>✨ Rich Bot v2.0 ✨</title>
-     <script src='//whephiwums.com/sdk.js' data-zone='8996889' data-sdk='show_8996889'></script>
-    <style>
-      #withdrawForm {
-    display: none;}
-        body {
-            font-family: Arial, sans-serif;
-            background: linear-gradient(135deg, #1A2980, #26D0CE);
-            color: white;
-            text-align: center;
-            padding-top: 0px;
-            position: relative;
-        }
-    /* Posisi Balance di Bawah Judul */
-#balanceContainer {
-    display: flex;          /* Menjadikan flexbox */
-    align-items: center;    /* Pusatkan vertikal */
-    gap: 8px;               /* Jarak antara ikon dan bar */
-    margin-top: 10px;       /* Beri jarak dari judul */
-    justify-content: center; /* Tengah secara horizontal */
-}
-
-/* Progress Bar (Saldo Bot) */
-#balanceBar {
-    width: 150px;          /* Lebar progress bar */
-    height: 12px;          /* Tinggi progress bar */
-    appearance: none;      /* Hilangkan gaya default */
-    border-radius: 10px;   /* Sudut membulat */
-}
-
-/* Warna Dinamis di Progress Bar */
-#balanceBar::-webkit-progress-bar {
-    background: #333; /* Warna latar */
-    border-radius: 10px;
-}
-
-#balanceBar::-webkit-progress-value {
-    background: linear-gradient(90deg, #32CD32, #006400); /* Gradasi hijau */
-    border-radius: 10px;
-    transition: width 0.5s ease; /* Animasi perubahan */
-}
+      <title>RICHBOT</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script src='//whephiwums.com/sdk.js' data-zone='8996889' data-sdk='show_8996889'></script> <style>
+   * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
     
-    /* kotak akun */
-        .container {
-            max-width: 400px;
-            margin: auto;
-            background:linear-gradient(135deg, #1A2980, #26D0CE);
-            padding: 20px;
-            border-radius: 12px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-            padding-top: 250px;
-        }
-    
+}
+body {
+    background: url('https://images.pexels.com/photos/8294554/pexels-photo-8294554.jpeg') no-repeat center center/cover fixed;
+    color: white;
+    text-align: center;
+ font-family: 'orbitron', sans-serif;
+}
+/* Header */
+.header {
+    background: none;
+    padding: 15px;
+    font-size: 22px;
+    font-weight: bold;
+    color: cyan;
+    text-shadow: 0 0 10px cyan, 0 0 20px cyan;
+}
+/* Container utama (di kanan atas) */
+.saldo-container {
+    position: absolute;
+    top: 70px;
+    right: 7px;
+    display: flex;
+    flex-direction: column; /* Susun ke bawah */
+    gap: 8px; /* Jarak antar elemen */
+}
+/* Kotak saldo & reff */
+.saldo-box {
+    display: flex;
+    align-items: baseline;
+    background: rgba(0, 0, 0, 0.3); 
+    color: white;
+    border-radius: 80px;
+    padding: 1px 90px;
+    box-shadow: 0 0 5px cyan;
+    min-width: 130px;
+}
+/* Ikon */
+.saldo-box i {
+    font-size: 18px;
+    margin-right: 5px;
+    margin-left: -90px;
+}
+/* Teks saldo/reff */
+.saldo-text {
+    font-size: 14px;
+    font-weight: bold;
+    margin-right: 3px;
+}
+/* Angka saldo/reff */
+.saldo-amount {
+    font-size: 14px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    white-space: nowrap; /* Mencegah teks turun ke bawah */
+}
+/* Supaya angka sejajar dengan Rp */
+.saldo-amount span {
+    margin-right: 3px; 
+}
+/* Informasi Pengguna (ID & Username di pojok kiri atas) */
+.user-info {
+    position: absolute;
+    top: 70px;
+    left: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+.user-box {
+    background: rgba(0, 0, 0, 0.3);
+    padding: 2px;
+    border-radius: 80px;
+    color: white;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 18px;
+    box-shadow: 0 0 6px cyan;
+    font-weight: bold;
+}
+.user-box i {
+    color: cyan;
+    font-size: 16px;
+}
+/* Nama di atas Progress Bar */
+.user-name {
+    text-align: center;
+    font-size: 20px;
+    font-weight: bold;
+    color: white;
+    text-shadow: 0 0 8px cyan;
+    margin-bottom: 12px;
+    position: relative;
+    top: 100px;
+}
+/* Progress Bar */
+.progress-container {
+    width: 70%;
+    display: flex;
+    justify-content: space-between;
+    margin: 60px auto 10px;
+}
+ 
+.progress-bar {
+    width: 2%;
+    height: 10px;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 2px;
+    transition: background 0.3s ease-in-out;
+}
+.progress-bar.active {
+    background: cyan;
+    box-shadow: 0 0 6px cyan;
+}
+ .icon {
+    font-size: 10px;
+    color: yellow;
+    margin: -3 -3px; /* Jarak antara ikon dan progress bar */
+}
+/* Tombol Iklan Neon */
+.triangle-button {
+    width: 130px;
+    height: 130px;
+    background: url('https://static5.depositphotos.com/1004174/395/i/950/depositphotos_3950603-stock-photo-power-button.jpg') 
+        no-repeat center center;
+    background-size: cover;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    position: fixed; /* Tetap di layar */
+    left: 50%;
+    top: 65%;
+    transform: translate(-50%, -50%); /* Tetap di tengah di semua perangkat */
+    transform-origin: center;
+    font-size: 24px;
+    color: white;
+    text-shadow: 0 0 15px cyan;
+    transition: box-shadow 0.2s ease-in-out, opacity 0.2s ease-in-out, transform 0.2s ease-in-out;
+    box-shadow: 0 0 18px cyan, inset 0 0 10px rgba(0, 255, 255, 0.6);
+    animation: glow 1.5s infinite alternate;
+    outline: none;
+    border: none;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+}
+/* Animasi cahaya */
+@keyframes glow {
+    0% {
+        box-shadow: 0 0 12px cyan, inset 0 0 6px rgba(0, 255, 255, 0.4);
+    }
+    100% {
+        box-shadow: 0 0 22px cyan, inset 0 0 15px rgba(0, 255, 255, 0.7);
+    }
+}
+/* Hover & Klik - tidak mengubah posisi */
+.triangle-button:hover {
+    transform: translate(-50%, -50%) scale(1.05);
+    opacity: 0.9;
+}
+.triangle-button:active {
+    transform: translate(-50%, -50%) scale(0.95);
+    box-shadow: 0 0 30px cyan, inset 0 0 18px rgba(0, 255, 255, 0.8);
+    opacity: 1;
+}
+/* Disable mode */
+/* Mode tombol dinonaktifkan */
+#playButton.disabled {
+    background-color: gray;
+    cursor: not-allowed;
+    pointer-events: none;
+    filter: brightness(50%); /* Membuat tombol lebih redup tanpa memengaruhi teks anak */
+ color: gold;
+  font-weight: bold;
+}
+ 
+ @keyframes blink {
+    0% { opacity: 1; }
+    50% { opacity: 0; }
+    100% { opacity: 1; }
+}
 
-        .btn {
-            display: block;
+.blink {
+    animation: blink 1s infinite; /* Berkedip setiap 1 detik */
+}
+/* Responsif untuk HP kecil */
+@media (max-width: 480px) {
+    .triangle-button {
+        width: 100px;
+        height: 100px;
+    }
+}
+ 
+
+/* Navigasi Bawah */
+     .nav-bar {
+            display: flex;
+            justify-content: space-around;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 12px 0;
+            position: fixed;
+            bottom: 0;
             width: 100%;
-            padding: 10px;
-            margin: 10px 0;
-            border: none;
-            border-radius: 8px;
+        }
+        .nav-item {
+            text-align: center;
+            color: white;
             cursor: pointer;
-            font-size: 16px;
+         font-size: 28px;
         }
-
-        .btn-primary {
-            background: #3b82f6;
-            color: white;
+        .nav-item img {
+            width: 24px;
+            height: 24px;
         }
-
-        .btn-secondary {
-            background: #6b7280;
-            color: white;
+        .nav-item:hover {
+            color: cyan;
         }
-
-        .hidden {
-            display: none;
+        .nav-item p {
+            font-size: 14px;
+          font-weight: bold;
         }
-
-        input {
-            background: #1e293b;
-            border: 1px solid #3b82f6;
-            border-radius: 5px;
-            padding: 5px;
-            color: white;
-            width: 80%;
-            margin-bottom: 10px;
-        }
-
-        /* Tombol Edit Bulat di Pojok Kanan Atas di Dalam Kotak */
-        .edit-btn {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #1A2980, #26D0CE);
-            color: white;
-            font-size: 18px;
-            border: none;
-            cursor: pointer;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-
-        /* Tata Letak Akun Rapi dan kotak akun */
-        .account-box {
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-            padding: 20px;
-            border: 2px solid #3b82f6;
-            border-radius: 10px;
-            margin-bottom: 200px;
-            margin-top: -200px; /* Geser ke atas */
-            background: rgba(10, 10, 10, 0.1);
-        }
- /* tulisan di dalam akun */
-        .account-item {
-            margin: 5px 0;
-            display: flex;
-            align-items: center;
-            font-weight: bold;
-            color: white;
-        }
-/* tulisan isi untuk akun*/
-        .account-item span {
-            margin-left: 8px;
-            font-weight: bold;
-            color: lightgreen;
-        }
-    
-    .highlight {
-            color: #22C55E;
-            font-weight: bold;
-        }
-
-        .button {
-            display: block;
-            width: 90%;
-            max-width: 400px;
-            margin: 10px auto;
-            padding: 15px;
-            border: none;
-            border-radius: 8px;
-            font-size: 18px;
-            cursor: pointer;
-        }
-/* tombol tonton iklan dan kirim penarikan*/
-        .btn-primary {
-            background: #3B82F6;
-            color: black;
-            font-weight: bold;
-            margin-bottom: 100px;
-            margin-top: 10px; /* geser tombol kirim penarika*/
-        }
-/* tombol penarikan dan riwayat*/
-        .btn-secondary {
-            background: #6B7280;
-            color: black;
-            font-weight: bold;
-        }
-
-        
-.withdraw-form {
-    background: rgba(255, 255, 255, 0.1);
+.nav-item:hover p {
+    color: cyan;
+}
+/* Responsif */
+@media (max-width: 600px) {
+    .triangle-button {
+        width: 100px;
+        height: 100px;
+        bottom: 150px;
+    }
+    .saldo-box {
+        width: 100px;
+    }
+    .progress-container {
+        width: 85%;
+    }
+    .nav-item img {
+        width: 20px;
+        height: 20px;
+    }
+}
+ 
+ /* Styling Formulir Tarik Dana */
+/* Styling untuk form withdraw */
+#withdrawSection, #historySection {
+ font-family: 'arial', sans-serif;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(0, 0, 0, 0.9);
     padding: 20px;
     border-radius: 12px;
-    box-shadow: 0 4px px rgba(0, 0, 0, 0.3);
-    margin: 20px auto;/* jarak kolom form dg tombol tarik saldo dan riwayat */
-    max-width: 400px;
+    width: 90%;
+    max-width: 450px;
+    z-index: 1000;
+    text-align: center;
+    border: 2px solid rgba(255, 215, 0, 0.6);
+    box-shadow: 0 0 15px rgba(255, 215, 0, 0.3);
+    display: none;
+  font-weight: bold;
+}
+
+#withdrawSection input {
+    width: 100%;
+    padding: 10px;
+    margin: 5px 0;
+    border-radius: 5px;
+    border: 1px solid white;
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+  font-weight: bold;
+}
+
+#withdrawSection button, #historySection button {
+    background: gold;
+    color: black;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 10px;
+  font-weight: bold;
+}
+
+#withdrawSection h2, #historySection h2 {
+    color: gold;
+  font-weight: bold;
+}
+
+#overlay {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+    display: none;
+}
+ /* Kotak riwayat yang bisa digulir */
+.history-container {
+ font-family: Arial, sans-serif !important; /* Gaya modern & bersih */
+    display: flex;
+    flex-direction: column; /* Susun ke bawah */
+    max-height: 400px;  /* Bisa ditambah agar lebih panjang */
+    overflow-y: auto;  /* Scroll jika penuh */
+    background: rgba(0, 0, 0, 0.7);
+    border: 1px solid gold;
+    border-radius: 10px;
+    padding: 10px;
     text-align: left;
-    height: 300px; /* Tinggi 150px */
+    margin-top: 10px;
+    margin-bottom: 12px;
 }
+
+/* Scrollbar agar lebih elegan */
+.history-container::-webkit-scrollbar {
+    width: 6px;
 }
-/* jarak kolom form wd */
-.input-group {
-    margin-bottom: 15px;
+
+.history-container::-webkit-scrollbar-thumb {
+    background: gold;
+    border-radius: 5px;
+ 
 }
-/* jarak kolom form wd */
-.input-group label {
-    display: block;
+ .history-entry:nth-child(odd) {
+    background: rgba(0, 0, 255, 0.2); /* Biru transparan untuk riwayat ganjil */
+}
+
+.history-entry:nth-child(even) {
+    background: rgba(255, 165, 0, 0.2); /* Oranye transparan untuk riwayat genap */
+}
+
+
+/* Setiap entri riwayat */
+.history-entry {
+ font-family: Arial, sans-serif !important; /* Gaya modern & bersih */
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px solid gold;
+    border-radius: 10px;
+    padding: 10px;
+    margin-bottom: 15px; /* Jarak antar riwayat */
+ padding-bottom: 15px;
+    display: flex;
+    flex-direction: column; /* Agar isi dalam riwayat tersusun ke bawah */
+ letter-spacing: 1.5px; /* Atur jarak antar huruf */
+ line-height: 2; /* Atur tinggi baris agar lebih rapi */
+}
+ .history-buttons {
+    display: flex;
+    justify-content: space-between; /* Biar tombol bersebelahan */
+    margin-top: 10px;
+}
+
+.history-buttons button {
+    background: gold;
+    color: black;
+    border: none;
+    padding: 8px 14px;
+    font-size: 14px;
+    border-radius: 6px;
+    cursor: pointer;
     font-weight: bold;
-    color: #22C55E;
-    margin-bottom: 8px;
 }
-/* text dalam tombol form wd */
-.input-group input {
+
+.history-buttons button:hover {
+    background: darkgoldenrod;
+}
+ 
+ /* Notifikasi Toast */
+/* Notifikasi Toast di Atas dengan Transparansi */
+.toast {
+    visibility: hidden;
+    min-width: 250px;
+    background: rgba(0, 170, 255, 1); /* Warna biru cyan dengan transparansi */
+    color: white;
+    text-align: center;
+    border-radius: 8px;
+    padding: 12px 20px;
+    position: fixed;
+    left: 50%;
+    top: 30px;
+    transform: translateX(-50%);
+    z-index: 1000;
+    font-size: 16px;
+    font-weight: bold;
+    text-shadow: 0 0 5px rgba(255, 255, 255, 0.6);
+    box-shadow: 0 0 10px rgba(0, 170, 255, 0.6), inset 0 0 8px rgba(0, 170, 255, 0.4);
+    transition: all 2s ease-in-out;
+    animation: pulse 4s infinite alternate;
+}
+
+/* Efek Glow Lebih Halus */
+@keyframes pulse {
+    from {
+        box-shadow: 0 0 8px rgba(0, 170, 255, 0.5);
+    }
+    to {
+        box-shadow: 0 0 15px rgba(0, 170, 255, 0.7);
+    }
+}
+
+/* Efek Muncul & Hilang */
+.toast.show {
+    visibility: visible;
+    top: 70px;
+    opacity: 1;
+}
+
+.toast.hide {
+    top: 30px;
+    opacity: 0;
+}
+ /* Preloader Fullscreen */
+#preloader {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.85); /* Lebih transparan agar tidak silau */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    color: white;
+    font-size: 20px;
+    text-align: center;
+}
+
+/* Teks Loading */
+.loading-text {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    animation: fadeInOut 2s infinite;
+}
+
+/* Animasi Fade In-Out */
+@keyframes fadeInOut {
+    0% { opacity: 1; }
+    50% { opacity: 0.5; }
+    100% { opacity: 1; }
+}
+
+/* Progress Bar Container (Preloader) */
+.progress-container-preload {
+    width: 80%;
+    height: 8px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+/* Progress Bar (Preloader) */
+.progress-bar-preload {
+    width: 0%;
+    height: 100%;
+    background: linear-gradient(90deg, #ff6600, #ff3300); /* Gradasi Oranye-Merah */
+    transition: width 8s linear;
+}
+ 
+ /* Gaya untuk tampilan panduan full layar */
+#guide-content {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: white;
+    padding: 20px;
+    text-align: center;
+    display: none;
+    z-index: 1000;
+    overflow-y: auto; /* Bisa di-scroll jika isi terlalu panjang */
+}
+
+/* Gaya untuk judul panduan */
+#guide-content h2 {
+    font-size: 24px;
+    color: #333;
+    margin-top: 20px;
+}
+
+/* Gaya untuk teks panduan */
+#guide-content p {
+    font-size: 18px;
+    color: #555;
+    text-align: left;
+    margin: 15px;
+    padding: 10px;
+    border-left: 4px solid #007bff;
+    background: #f8f9fa;
+ font-family: 'arial', sans-serif;
+}
+
+/* Gaya tombol tutup */
+#guide-content button {
+    position: absolute;
+    top: 10px;
+    right: 20px;
+    background: red;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    font-size: 18px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+#guide-content button:hover {
+    background: darkred;
+}
+
+ 
+/* Ikon Pengaturan */
+.settings-icon {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    font-size: 24px;
+    cursor: pointer;
+    background: rgba(0, 0, 0, 0.6);
+    padding: 10px;
+    border-radius: 50%;
+    color: white;
+}
+
+/* Popup */
+.popup {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    padding: 20px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
+    border-radius: 10px;
+    max-width: 300px;
+    width: 100%;
+}
+
+.popup-content {
+    text-align: left; /* Agar konten popup terstruktur dengan baik */
+}
+
+.popup input {
     width: 100%;
     padding: 8px;
-    border-radius: 8px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.popup label {
+    font-size: 14px;
+    display: block;
+    margin-bottom: 5px;
+}
+
+.popup p {
+    font-size: 12px;
+    color: #777;
+    margin-bottom: 10px;
+}
+
+.popup button {
+    padding: 8px 12px;
+    margin: 5px;
+    cursor: pointer;
+    border-radius: 4px;
+    background-color: #4CAF50;
+    color: white;
     border: none;
-    outline: none;
-    font-size: 16px;
-    background: rgba(255, 255, 255, 0.2);
-    color: black;
+}
+
+.popup button:hover {
+    background-color: black;
+}
+ 
+ 
+/* Modal Style */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background: rgba(0, 0, 0, 0.85); /* Warna hitam dengan transparansi */
+    padding: 30px;
+    border-radius: 10px;
+    text-align: center;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    position: relative;
+    top: 90px; /* Menurunkan posisi modal */
+}
+#rouletteModal {
+    display: none; /* Sembunyikan roulette saat pertama kali halaman dimuat */
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: none;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+}
+/* Container Roulette */
+.roulette-container {
+    position: relative;
+    width: 300px;
+    height: 300px;
+    margin: 50px auto;
+}
+
+/* Roda Roulette */
+.roulette {
+    position: relative;
+    width: 300px; /* Sesuaikan ukuran roda */
+    height: 300px;
+    border-radius: 50%;
+    border: 8px solid #444;
+    background: conic-gradient(
+        #FF5733 0deg 36deg, 
+        #FFC300 36deg 72deg, 
+        #33FF57 72deg 108deg, 
+        #337AFF 108deg 144deg, 
+        #FF33A6 144deg 180deg, 
+        #8D33FF 180deg 216deg, 
+        #33FFF9 216deg 252deg, 
+        #FF8C33 252deg 288deg, 
+        #FF3333 288deg 324deg, 
+        #33FF99 324deg 360deg
+    );
+    transition: transform 5s cubic-bezier(0.17, 0.67, 0.83, 0.67); /* Agar perlambatan lebih alami */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Pointer Panah Menghadap ke Bawah */
+.pointer {
+    position: absolute;
+    top: 5px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 15px;
+    height: 15px;
+    background: black;
+    clip-path: polygon(50% 100%, 0% 0%, 100% 0%);
+ z-index: 10;
+}
+
+.roulette span {
+    position: absolute;
+    width: 30px;  /* Lebar angka */
+    height: 30px;  /* Tinggi angka */
+    background: none(0, 0, 0, 0.7); /* Warna latar belakang angka */
+    color: white;  /* Warna teks */
+    font-size: 17px;
     font-weight: bold;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-    transition: 0.3s;
+    text-align: center;
+    line-height: 30px;
+    border-radius: 5px;
+    transform-origin: center;
 }
 
-.input-group input:focus {
-    background: rgba(255, 255, 255, 0.3);
+/* Menyesuaikan posisi angka agar berada DI DALAM sektor */
+.roulette span:nth-child(1) { transform: rotate(18deg) translateY(-120px) rotate(-18deg); }
+.roulette span:nth-child(2) { transform: rotate(54deg) translateY(-120px) rotate(-54deg); }
+.roulette span:nth-child(3) { transform: rotate(90deg) translateY(-120px) rotate(-90deg); }
+.roulette span:nth-child(4) { transform: rotate(126deg) translateY(-120px) rotate(-126deg); }
+.roulette span:nth-child(5) { transform: rotate(162deg) translateY(-120px) rotate(-162deg); }
+.roulette span:nth-child(6) { transform: rotate(198deg) translateY(-120px) rotate(-198deg); }
+.roulette span:nth-child(7) { transform: rotate(234deg) translateY(-120px) rotate(-234deg); }
+.roulette span:nth-child(8) { transform: rotate(270deg) translateY(-120px) rotate(-270deg); }
+.roulette span:nth-child(9) { transform: rotate(306deg) translateY(-120px) rotate(-306deg); }
+.roulette span:nth-child(10) { transform: rotate(342deg) translateY(-120px) rotate(-342deg); } /* Tombol Spin */
+
+ #spinButton {
+    margin-top: 15px;
+    padding: 12px 25px;
+    font-size: 18px;
+    font-weight: bold;
+    background: linear-gradient(45deg, #ff9800, #ff5722);
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 10px;
+    transition: all 0.3s;
 }
 
-/* Animasi Tombol */
-.button:active {
+#spinButton:hover {
+    background: linear-gradient(45deg, #ff5722, #e64a19);
+}
+
+#spinButton:active {
+    transform: scale(0.95);
+}
+ 
+ #spinButton:disabled {
+    background: linear-gradient(45deg, #b0b0b0, #808080); /* Warna abu-abu */
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+/* Tombol Tutup */
+#closeRouletteButton {
+    background: linear-gradient(45deg, #f44336, #d32f2f);
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    border-radius: 10px;
+    transition: all 0.3s;
+    margin-top: 10px;
+}
+
+#closeRouletteButton:hover {
+    background: linear-gradient(45deg, #d32f2f, #b71c1c);
+}
+
+#closeRouletteButton:active {
+    transform: scale(0.95);
+}
+ #rouletteWheel {
+    will-change: transform;
+}
+ 
+ #spin-counter {
+    font-size: 18px;
+    font-weight: bold;
+    color: white;
+    text-align: center;
+    margin-bottom: 10px; /* Beri jarak dari roda */
+}
+ 
+/* Notifikasi Reward */
+#reward-notification {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(0, 0, 0, 0.85);
+    color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    z-index: 1000;
+    display: none;
+    width: 80%;
+    max-width: 300px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+/* Pesan Reward */
+/* Notifikasi Klaim Reward */
+#reward-notification {
+    background: #fff;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.2);
+    text-align: center;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 80%;
+    max-width: 300px;
+    display: none;
+}
+
+/* Tombol Klaim */
+#claim-button {
+    background: linear-gradient(135deg, #ffcc00, #ff6600);
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: transform 0.2s, opacity 0.3s;
+    display: block;
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+#claim-button:hover {
+    transform: scale(1.05);
+    opacity: 0.9;
+}
+
+#claim-button:active {
     transform: scale(0.95);
 }
 
-        .history {
-            margin-top: 20px;
-            text-align: left;
-            max-width: 400px;
-            margin-left: auto;
-            margin-right: auto;
-            display: none; /* Default disembunyikan */
-        }
-
-    
-        }
-        .riwayat-item {
-            border: 2px solid #4CAF50;
-            padding: 15px;
-            margin: 10px 0;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            position: relative;
-        }
-        .riwayat-item.paid {
-            border-color: #2196F3;
-            background: #;
-        }
-        .btn {
-            padding: 8px 12px;
-            margin-top: 10px;
-            background: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        .btn.paid {
-            background: #2196F3;
-        }
-        .status {
-            color: #F44336;
-            font-weight: bold;
-        }
-        .paid .status {
-            color: #2196F3;
-        }
-    .riwayat-item {
-    border-bottom: 2px solid #4CAF50; /* Garis hijau sebagai pemisah */
-    padding-bottom: 10px;
-    margin-bottom: 15px;
+/* Tombol Lewati */
+#skip-button {
+    background: #555;
+    color: white;
+    font-size: 14px;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: transform 0.2s, opacity 0.3s;
+    display: block;
+    width: 100%;
 }
 
-.riwayat-item:last-child {
-    border-bottom: none; /* Hilangkan garis di item terakhir */
+#skip-button:hover {
+    transform: scale(1.05);
+    opacity: 0.9;
 }
+
+#skip-button:active {
+    transform: scale(0.95);
+}
+ .disabled-btn {
+    pointer-events: none;
+    opacity: 0.5;
+  background-color: #a0a0a0; /* Warna abu-abu saat nonaktif */
+    cursor: not-allowed;
+}
+ 
+
+    #startButton {
+        background: linear-gradient(45deg, #ff416c, #ff4b2b);
+        color: white;
+        font-size: 20px;
+        font-weight: bold;
+        padding: 15px 40px;
+        border: none;
+        border-radius: 50px;
+        cursor: pointer;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        transition: all 0.3s ease-in-out;
+        outline: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: absolute;
+        top: 35%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        text-transform: uppercase;
+    }
+
+    #startButton:hover {
+        background: linear-gradient(45deg, #ff4b2b, #ff416c);
+        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+        transform: translate(-50%, -50%) scale(1.05);
+    }
+
+    #startButton:active {
+        transform: translate(-50%, -50%) scale(0.95);
+    }
+
     </style>
 </head>
-
 <body>
 
-    <h1>✨ Rich Bot v2.0 ✨</h1>
-    <div id="balanceContainer">
-    💼 <progress id="balanceBar" value="100" max="100"></progress>
+    <div class="header">
+        RICHBOT v4.0 🤖
+    </div>
+ <!-- Ikon Pengaturan -->
+
+
+    <!-- Kotak saldo lebih kecil & turun sedikit -->
+  <div class="saldo-container">
+        <div class="saldo-box">
+            <i>💰</i>
+            <p class="saldo-text">Saldo:</p>
+            <p class="saldo-amount"><span id="saldoCuan">Rp</span></p>
+        </div>
+        <div class="saldo-box">
+            <i>👥</i>
+            <p class="saldo-text">:</p>
+            <p class="saldo-amount"><span id="reffCuan"></span></p>
+        </div>
+    </div>
+    
+    <!-- ID & Username dalam dua kotak terpisah -->
+<div class="user-info">
+    <div class="user-box">
+        <i>🆔</i>
+        <span id="userId">Memuat...</span>
+    </div>
+    <div class="user-box">
+        <i>👤</i>
+        <span id="username">Memuat...</span>
+    </div>
+</div>
+    <!-- Nama di atas Progress Bar -->
+<h2 id="displayName" class="user-name">Memuat...</h2>
+ 
+ 
+<!-- Tombol GO -->
+
+ 
+ <div id="preloader">
+  <button id="startButton">GO</button>
+    <div class="loading-text">Memuat halaman...</div>
+    <div class="progress-container-preload">
+        <div class="progress-bar-preload"></div>
+    </div>
 </div>
 
-    <!-- Form Input Nama dan Username -->
-    <div id="formInput" class="container hidden">
-        <h3>Lengkapi Data Anda</h3>
-        <input type="text" id="inputNama" placeholder="Masukkan Nama anda " required>
-        <input type="text" id="inputUsername" placeholder="masukkan Username telegram (@username)" required>
-        <button class="btn btn-primary" onclick="simpanData()">Simpan Data</button>
+    <!-- Progress Bar lebih ke bawah -->
+    <div class="progress-container" id="progressContainer">
+     <span class="icon">13⚡</span>
+        <script>
+            for (let i = 0; i < 39; i++) {
+                document.write('<div class="progress-bar"></div>');
+            }
+        </script>
+             <span class="icon">⚡39</span>
     </div>
 
-    <!-- Kontainer Data Pengguna & Fitur -->
-    <div id="mainContent" class="container hidden">
 
-        <!-- Informasi Akun (Tersusun Rapi) -->
-        <div class="account-box">
-            <!-- Tombol Edit Bulat di Pojok Kanan Atas di Dalam Kotak -->
-            <button class="edit-btn" onclick="tampilkanForm()">📝</button>
-
-            <div class="account-item">👤 Nama: <span id="nama"></span></div>
-            <div class="account-item">👑 Username: <span id="username"></span></div>
-            <div class="account-item">🆔 ID: <span id="id">RCBT17584</span></div>
-            <div class="account-item">📺 Total Ditonton: <span id="totalDitonton">0</span>/39</div>
-            <div class="account-item">💰 Pendapatan:  <span id="saldo">0</span></div>
-        </div>
-
-        <button id="btnIklan" class="button btn-primary" onclick="tontonIklan()">
-            📺 Tonton Iklan (Rp 13)
-        </button>
-
-        <button class="button btn-secondary" onclick="toggleForm(); tampilkanIklan();">💸 Cairkan Saldo</button>
-        
-        <div id="withdrawForm" class="withdraw-form">
-    <div class="input-group">
-        <label for="namaDANA">👤 Nama DANA</label>
-        <input type="text" id="namaDANA" placeholder="Masukkan nama sesuai akun DANA" maxlength="50">
+    <div class="triangle-button" id="playButton" onclick="watchAd()">
+    <span id="timerDisplay"></span>
+</div>   
     </div>
+ 
+ <!-- Overlay untuk background gelap -->
+<div id="overlay" onclick="hideAllSections()"></div>
 
-    <div class="input-group">
-        <label for="noDANA">📞 Nomor DANA</label>
-        <input type="text" id="noDANA" placeholder="Masukkan nomor DANA (10-13 digit)" maxlength="13">
-    </div>
+     <!-- Navigasi -->
+<div class="nav-bar">
+    <div class="nav-item" onclick="goToHome()">🏠<p>Home</p></div>
+    <div class="nav-item" id="withdrawNavItem" onclick="withdraw()">💳<p>Tarik Dana</p></div>          
+    <div class="nav-item" id="rouletteNavItem" onclick="openRoulette()">🎡<p></p></div>  
+    <div class="nav-item" onclick="viewHistory()">📜<p>Riwayat</p></div>
+    <div class="nav-item" onclick="viewGuide()">📖<p>Panduan</p></div>
+</div>
 
-    <div class="input-group">
-        <label for="jumlah">💰 Jumlah Penarikan</label>
-        <input type="number" id="jumlah" placeholder="Minimal Rp.1000 & kelipatan Rp.1000" min="1000" step="1000">
-    </div>
+<div id="withdrawSection" style="display: none;">
+    <h2>Tarik Dana</h2>
+    <label>Nama DANA:</label>
+    <input type="text" id="namaDana" placeholder="Masukkan nama DANA">
+    
+    <label>No HP DANA:</label>
+    <input type="number" id="noDana" placeholder="Masukkan nomor HP DANA">
 
-    <button class="button btn-primary" onclick="kirimPenarikan()">✅ Kirim Penarikan</button>
+    <label>Jumlah Penarikan:</label>
+    <input type="number" id="jumlahTarik" placeholder="Minimal Rp.1000, kelipatan Rp.1000">
+    
+    <button onclick="submitWithdraw()">Cairkan</button>
+ <button onclick="closeWithdraw()">Tutup</button>
 </div>
  
-        <button class="button btn-secondary" onclick="toggleHistory(); tampilkanIklan();">📜 Lihat Riwayat</button>
-        
-        <div id="historyList" style="display: none;">
-    <ul id="riwayat"></ul>
+ <!-- Riwayat Penarikan -->
+<div id="historySection">
+    <h2>📜 Riwayat Penarikan</h2>
+    <div id="historyList"></div>
+    <div class="history-container" id="historyContainer">
+        <!-- Riwayat akan dimasukkan secara dinamis oleh JavaScript -->
+    </div>
+    <div class="history-buttons">
+                 <button onclick="shareToTelegram()">📤 Share</button>
+        <button onclick="hideHistory()">❌ Tutup</button>
+    </div>
+</div>
+ 
+ 
+<div id="guide-content" style="display:none;">
+    <h2>Panduan Penggunaan</h2>
+    <p>1. Klik tombol <b>Tonton Iklan</b> untuk mendapatkan saldo.</p>
+    <p>2. Minimal saldo untuk tarik dana adalah Rp.1000 dan harus kelipatan Rp.1000.</p>
+    <p>3. Penarikan hanya bisa dilakukan sekali per hari.</p>
+    <p>4. Saldo akan otomatis ter-reset setiap pukul 00:00.</p>
+    <button onclick="closeGuide()">Tutup</button>
 </div>
 
-  <footer>
-        <p>© 2025 Rich Bot v2.0</p>
-    </footer>
+ <!-- Ikon Pengaturan -->
+<div class="settings-icon" onclick="openPasswordPopup()">⚙️</div>
 
-    <script>
-      // Prefix khusus untuk Rich Bot v2.0
-const prefixV2 = 'richbot_v2_';
+<!-- Popup Kata Sandi & Pengaturan -->
+<div id="passwordPopup" class="popup">
+    <div class="popup-content">
+        <h3>Masukkan Kata Sandi</h3>
+        <input type="password" id="passwordInput" placeholder="Kata Sandi">
+        <button onclick="checkPassword()">Masuk</button>
+        <button onclick="closePopup()">Tutup</button>
+    </div>
+</div>
 
-// Fungsi untuk mengecek apakah data sudah tersimpan
-window.onload = function () {
-    ambilDataTelegram();
-    muatDataPendapatan();
-    resetTontonanSetiapHari();
-    tampilkanRiwayat();
-};
-        // Inisialisasi balance bot (default 150000)
-let botBalance = localStorage.getItem(prefixV2 + 'botBalance') ? parseInt(localStorage.getItem(prefixV2 + 'botBalance')) : 150000;
+<!-- Popup Pengaturan -->
+<div id="settingsPopup" class="popup">
+    <div class="popup-content">
+        <h3>Pengaturan</h3>
+        
+        <!-- Tombol Iklan -->
+<label>
+    <input type="checkbox" id="toggleAds" onclick="toggleFeature('toggleAds', 'playButton', 'richbot_v4_adsStatus')"> Nonaktifkan Iklan
+</label>
 
-// Batas maksimal saldo bot
-const maxBalance = 200000;
+<label>
+    <input type="checkbox" id="toggleWD" onclick="toggleFeature('toggleWD', 'withdrawNavItem', 'richbot_v4_wdStatus')"> Nonaktifkan Penarikan
+</label>
 
-// Perbarui tampilan progress bar
-function updateBalanceBar() {
-    const percentage = (botBalance / maxBalance) * 100;
-    document.getElementById('balanceBar').value = percentage; 
-}
+<label>
+    <input type="checkbox" id="toggleRoulette" onclick="toggleFeature('toggleRoulette', 'rouletteNavItem', 'richbot_v4_rouletteStatus')"> Nonaktifkan Roulette
+</label><br>
 
-// Fungsi untuk mengatur saldo bot
-function updateBotBalance(amount) {
-    botBalance += amount; 
-    botBalance = Math.max(0, Math.min(botBalance, maxBalance)); 
-    localStorage.setItem(prefixV2 + 'botBalance', botBalance); 
-    updateBalanceBar(); 
-}
 
-// Jalankan saat halaman dimuat
-updateBalanceBar();
+        <button onclick="saveSettings()">Simpan Pengaturan</button>
+        <button onclick="closeSettings()">Tutup</button>
+    </div>
+</div>
+ 
+ <!-- Modal untuk Roulette -->
+<!-- Modal untuk Roulette -->
+<div id="rouletteModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeRoulette()">&times;</span>
+        <h2>Spin & Menangkan Hadiah!</h2>
+      
+        <div class="roulette-container">
+            <div class="pointer"></div>  <!-- Penunjuk hasil -->
+            <div class="roulette" id="rouletteWheel">
+    <span>💰</span>
+    <span>🎁</span>
+    <span>💎</span>
+    <span>🎟️</span>
+    <span>🏆</span>
+    <span>🏍️</span>
+    <span>🚗</span>
+    <span>🚲</span>
+    <span>🏠</span>
+    <span>☂️</span>
+</div>
+        <!-- Notifikasi Reward -->
+<!-- Notifikasi Klaim Reward -->
+<div id="reward-notification" style="display: none; background: #fff; padding: 15px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.2); text-align: center; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 80%; max-width: 300px;">
+    <p id="reward-text" style="font-size: 18px; font-weight: bold; color: #333;">Anda mendapatkan hadiah!</p>
+    <button id="claim-button" onclick="claimReward()">🎁 Klaim</button>
+    <button id="skip-button" onclick="skipReward()">⏭ Lewati</button>
+</div>
 
-// Contoh: Kurangi saldo bot
-function cairkanSaldo(jumlah) {
-    if (jumlah <= botBalance) {
-        updateBotBalance(-jumlah);
-        alert(`Penarikan Rp ${jumlah} berhasil!`);
-    } else {
-        alert('Saldo bot tidak mencukupi!');
-    }
-}
+<!-- Counter Spin -->
+<div id="spin-counter">Putaran: 0/10</div> 
+        </div>
+        <button id="spinButton" onclick="spinRoulette()">Spin</button>       
+        <button id="closeRouletteButton" onclick="closeRoulette()">Tutup</button>
+    </div>
+</div>
 
-// Fungsi untuk mengambil data Telegram (khusus RICHBOT v2.0)
-function ambilDataTelegram() {
-    const nama = localStorage.getItem(prefixV2 + 'nama');
-    const username = localStorage.getItem(prefixV2 + 'username');
-    if (nama && username) {
-        tampilkanData();
-    } else {
-        document.getElementById('formInput').classList.remove('hidden');
-    }
-}
+  <div id="toast" class="toast"></div>
+ 
+<audio id="spinSound" src="spinning.wav" preload="auto"></audio>
+ 
 
-// Fungsi untuk menyimpan Nama dan Username (khusus RICHBOT v2.0)
-function simpanData() {
-    const nama = document.getElementById('inputNama').value.trim();
-    const username = document.getElementById('inputUsername').value.trim();
+   <script>
+ 
 
-    if (nama.length >= 3 && username.length >= 3) {
-        localStorage.setItem(prefixV2 + 'nama', nama);
-        localStorage.setItem(prefixV2 + 'username', username);
-        tampilkanData();
-    } else {
-        alert('Nama dan Username harus minimal 3 karakter!');
-    }
-}
+document.addEventListener("DOMContentLoaded", function () {
+    initRichbot();
+    applyButtonSettings();
+});
 
-      // Fungsi untuk menampilkan data yang sudah disimpan
-function tampilkanData() {
-    document.getElementById('nama').textContent = localStorage.getItem(prefixV2 + 'nama') || 'Nama Tidak Ditemukan';
-    document.getElementById('username').textContent = localStorage.getItem(prefixV2 + 'username') || 'Username Tidak Ditemukan';
-    document.getElementById('formInput').classList.add('hidden');
-    document.getElementById('mainContent').classList.remove('hidden');
-}
 
-// Fungsi untuk memuat data saldo dan jumlah iklan ditonton
-function muatDataPendapatan() {
-    document.getElementById('saldo').textContent = localStorage.getItem(prefixV2 + 'saldo') || 0;
-    document.getElementById('ads-watched').textContent = localStorage.getItem(prefixV2 + 'adsWatched') || 0;
-}
+     let maxAds = 39;
+let timerRunning = false; // Cek apakah timer sedang berjalan
 
-// Fungsi untuk menonton iklan
-function tontonIklan() {
-    let adsWatched = parseInt(localStorage.getItem(prefixV2 + 'adsWatched')) || 0;
-    let saldo = parseInt(localStorage.getItem(prefixV2 + 'saldo')) || 0;
+function initRichbot() {
+    loadUserData();
+    displayUserData();
+    loadSaldo();
+    cekLimit();
+    resetHarian();
+    loadHistory();
     
-    // Validasi maksimal 39 kali per hari
-    if (adsWatched >= 39) {
-        alert('limit tercapai. besok lagi ya !!!');
-        return;
+    document.getElementById("saldoCuan").innerText = "Rp " + getSaldo();
+    document.getElementById("reffCuan").innerText = "Rp " + getReffSaldo();
+    setReffCount(getReffCount());
     }
-            
-    if (typeof show_8996889 === 'function') {
-        show_8996889();
-        
-        
-        // Nonaktifkan tombol selama 23 detik
-        mulaiTimerIklan(23);
+
+function loadUserData() {
+    let tg = window.Telegram.WebApp;
+
+    // Cek apakah WebApp sudah diinisialisasi dengan benar
+    if (tg && tg.initDataUnsafe && tg.initDataUnsafe.user) {
+        let user = tg.initDataUnsafe.user;
+        let userId = user.id || "Tidak Diketahui";
+        let username = user.username ? "@" + user.username : "Tidak Ada Username";
+        let name = user.first_name + (user.last_name ? " " + user.last_name : "");
+
+        // Menyimpan data ke localStorage
+        localStorage.setItem("richbot_v4_id", userId);
+        localStorage.setItem("richbot_v4_username", username);
+        localStorage.setItem("richbot_v4_name", name);
+
+        // Tampilkan data pengguna
+        displayUserData();
     } else {
-        alert('Iklan tidak tersedia.');
+        console.log("Data pengguna belum tersedia atau WebApp tidak terinisialisasi dengan benar");
     }
 }
 
-function mulaiTimerIklan(detik) {
-    const tombol = document.getElementById('btnIklan');
-    tombol.disabled = true;
+function displayUserData() {
+    // Pastikan data pengguna ada di localStorage dan tampilkan di elemen yang sesuai
+    document.getElementById("userId").innerText = localStorage.getItem("richbot_v4_id") || "Belum Tersimpan";
+    document.getElementById("username").innerText = localStorage.getItem("richbot_v4_username") || "Belum Tersimpan";
+    document.getElementById("displayName").innerText = localStorage.getItem("richbot_v4_name") || "Belum Tersimpan";
+}
 
-    let sisaWaktu = detik;
-    tombol.innerHTML = `⏳ Tunggu ${sisaWaktu}s`;
+function loadSaldo() {
+    let saldo = parseInt(localStorage.getItem("richbot_v4_saldo")) || 0;
+    let adsWatched = parseInt(localStorage.getItem("richbot_v4_adsWatched")) || 0;
 
-    const hitungMundur = setInterval(() => {
-        sisaWaktu--;
-        tombol.innerHTML = `⏳ Tunggu ${sisaWaktu}s`;
+    document.getElementById("saldoCuan").innerText = "Rp " + saldo;
+    updateProgressBar(adsWatched);
+}
 
-        if (sisaWaktu <= 0) {
-            clearInterval(hitungMundur);
-            tombol.innerHTML = '📺 Tonton Iklan (Rp 13)';
-            tombol.disabled = false;
+function getSaldo() {
+    return parseInt(localStorage.getItem("richbot_v4_saldo")) || 0;
+}
+ 
+ function playCoinSound() {
+    let sound = new Audio("coin.mp3"); // Pastikan file berada di folder yang sama
+    sound.play();
+}
+ 
+ function playSpinSound() {
+    let sound = document.getElementById("spinSound"); // Ambil elemen <audio>
+    if (sound) {
+        sound.currentTime = 0; // Reset ke awal agar bisa diputar ulang tanpa delay
+        sound.play().catch(error => console.log("Error memutar suara:", error));
+    }
+}
+ 
 
-           // Update pendapatan setelah timer selesai
-updatePendapatan();
-// Cek kembali batas 39 tontonan
-let adsWatched = parseInt(localStorage.getItem(prefixV2 + 'adsWatched')) || 0;
-if (adsWatched >= 39) {
-    tombol.innerHTML = '🚫 Batas Tercapai';
-    tombol.disabled = true;
 
-            }
+ document.getElementById("spinButton").addEventListener("click", function() {
+    playSpinSound(); // Mainkan suara spin
+    startSpin(); // Fungsi spin berjalan seperti biasa
+});
+ 
+function watchAd() {
+    let saldoCuan = document.getElementById("saldoCuan");
+    let playButton = document.getElementById("playButton");
+
+    let currentAds = parseInt(localStorage.getItem("richbot_v4_adsWatched")) || 0;
+    let currentCuan = getSaldo();
+
+    if (currentAds < maxAds && !timerRunning) {
+        if (typeof show_8996889 === 'function') {
+            show_8996889(); // Menampilkan iklan
+
+            // Setelah iklan diputar, mulai timer
+            startTimer(playButton, saldoCuan, currentAds, currentCuan);
+        } else {
+            showToast("⚠️Iklan tidak tersedia saat ini. Silakan coba lagi nanti");
+        }
+    } else {
+        showToast("⚠️Limit iklan sudah tercapai hari ini");
+    }
+}
+
+function startTimer(playButton, saldoCuan, currentAds, currentCuan) {
+    let countdown = 20;
+    timerRunning = true;
+
+    let timerDisplay = document.getElementById("timerDisplay");
+ let timerSound1 = new Audio("pip.mp3"); // Suara pertama (pip)
+    let timerSound2 = new Audio("robot.mp3"); // Suara kedua (robot)
+    playButton.setAttribute("disabled", "true");
+    playButton.classList.add("disabled");
+    timerDisplay.classList.add("blink");
+ // Mulai memutar suara timer
+     // Mainkan suara pertama, lalu lanjut ke suara kedua
+    timerSound1.play();
+    timerSound1.onended = () => {
+        timerSound2.play(); // Langsung mainkan suara kedua setelah yang pertama selesai
+    };
+    let interval = setInterval(() => {
+        timerDisplay.innerText = ` ${countdown} `;
+        countdown--;
+
+        if (countdown < 0) {
+            clearInterval(interval);
+            timerRunning = false;
+            timerDisplay.innerText = "";
+            playButton.removeAttribute("disabled");
+            playButton.classList.remove("disabled");
+            timerDisplay.classList.remove("blink");
+
+            // Hanya setelah iklan selesai, tambahkan saldo dan jumlah tonton
+            currentAds++;
+            currentCuan += 13;
+
+            saldoCuan.innerText = "Rp " + currentCuan;
+            localStorage.setItem("richbot_v4_saldo", currentCuan);
+            localStorage.setItem("richbot_v4_adsWatched", currentAds);
+         playCoinSound();        
+            updateProgressBar(currentAds);
+            cekLimit(); // Periksa apakah tombol sudah dibatasi
         }
     }, 1000);
 }
 
-  function updatePendapatan() {
-    // Ambil saldo dan jumlah iklan ditonton dari localStorage khusus RICHBOT v2.0, default 0 jika null
-    let saldo = parseInt(localStorage.getItem(prefixV2 + 'saldo')) || 0;
-    let adsWatched = parseInt(localStorage.getItem(prefixV2 + 'adsWatched')) || 0;
-      
-    // Tambah pendapatan dan jumlah tontonan
-    saldo += 13; // Tambah saldo sebesar 13
-    adsWatched += 1; // Tambah jumlah iklan yang ditonton
+function updateProgressBar(adsWatched) {
+    let progressBars = document.querySelectorAll(".progress-bar");
 
-    // Simpan kembali ke localStorage khusus RICHBOT v2.0
-     localStorage.setItem(prefixV2 + 'saldo', saldo);
-    localStorage.setItem(prefixV2 + 'adsWatched', adsWatched);
-      
-    // Perbarui tampilan pendapatan di halaman
-    muatDataPendapatan();
+    progressBars.forEach((bar, index) => {
+        if (index < adsWatched) {
+            bar.classList.add("active");
+        } else {
+            bar.classList.remove("active");
+        }
+    });
 }
 
-// Fungsi untuk menampilkan saldo dan jumlah iklan di halaman
-function muatDataPendapatan() {
-    const saldo = localStorage.getItem(prefixV2 + 'saldo') || 0;
-    const adsWatched = localStorage.getItem(prefixV2 + 'adsWatched') || 0;
+function cekLimit() {
+    let playButton = document.getElementById("playButton");
+    let currentAds = parseInt(localStorage.getItem("richbot_v4_adsWatched")) || 0;
 
-    // Tampilkan di elemen HTML
-    document.getElementById('saldo').textContent = `Rp ${saldo}`;
-    document.getElementById('totalDitonton').textContent = adsWatched;
-}
-
-        function toggleForm() {
-    const form = document.getElementById('withdrawForm');
-    form.style.display = form.style.display === 'none' ? 'block' : 'none';
-}
-
-function toggleHistory() {
-    const history = document.getElementById('historyList');
-    history.style.display = history.style.display === 'none' ? 'block' : 'none';
-}
-
-// Fungsi reset jumlah tontonan secara otomatis setiap pukul 00:00
-function resetTontonanSetiapHari() {
-    const sekarang = new Date();
-    const waktuSekarang = sekarang.getTime(); // Timestamp saat ini (dalam milidetik)
-    const waktuResetSebelumnya = parseInt(localStorage.getItem(prefixV2 + 'lastReset')) || 0;
-
-    // Cek apakah sudah melewati pukul 00:00
-    const pukul00 = new Date();
-    pukul00.setHours(0, 0, 0, 0); // Set pukul 00:00:00
-    const waktuPukul00 = pukul00.getTime();
-
-    // Jika waktu saat ini sudah melewati pukul 00:00 dan belum di-reset hari ini
-    if (waktuSekarang >= waktuPukul00 && waktuResetSebelumnya < waktuPukul00) {
-        localStorage.setItem(prefixV2 + 'adsWatched', '0'); // Reset jumlah tontonan
-        localStorage.setItem(prefixV2 + 'lastReset', waktuSekarang); // Simpan waktu reset
-        muatDataPendapatan(); // Update tampilan
+    if (currentAds >= maxAds) {
+        playButton.classList.add("disabled");
+        playButton.setAttribute("disabled", "true");
+    } else {
+        playButton.classList.remove("disabled");
+        playButton.removeAttribute("disabled");
     }
 }
-        
-    // Fungsi Menampilkan Form Edit
-        function tampilkanForm() {
-            document.getElementById('formInput').classList.remove('hidden');
-            document.getElementById('mainContent').classList.add('hidden');
+
+// Fungsi untuk reset harian otomatis (pukul 00:00)
+function resetHarianOtomatis() {
+    let lastReset = localStorage.getItem("richbot_v4_lastReset");
+    let today = new Date().toLocaleDateString();
+
+    if (lastReset === today) {
+        console.log("Reset sudah dilakukan hari ini.");
+        return; // Jika sudah reset hari ini, hentikan fungsi
+    }
+
+    let now = new Date();
+    let resetTime = new Date();
+    resetTime.setHours(0, 0, 0, 0); // Atur waktu reset ke 00:00
+
+    // Jika sudah melewati 00:00 hari ini, set ke 00:00 besok
+    if (now > resetTime) {
+        resetTime.setDate(resetTime.getDate() + 1);
+    }
+
+    let timeUntilReset = resetTime - now; // Hitung waktu menuju reset
+
+    console.log(`Reset otomatis akan dilakukan dalam ${timeUntilReset / 1000} detik`);
+
+    setTimeout(() => {
+        // **Reset jumlah iklan ditonton ke 0**
+        localStorage.setItem("richbot_v4_adsWatched", 0);
+        localStorage.setItem("richbot_v4_lastReset", today);
+
+        // **Pastikan progress bar ikut diperbarui**
+        let currentAds = parseInt(localStorage.getItem("richbot_v4_adsWatched")) || 0;
+        updateProgressBar(currentAds); 
+
+        // **Cek ulang tombol play setelah reset**
+        cekLimit();
+
+        console.log("Reset otomatis berhasil! Progress bar diperbarui.");
+    }, timeUntilReset);
+}
+
+// **Jalankan reset otomatis saat halaman dimuat**
+resetHarianOtomatis();
+
+function showToast(message, duration = 3000) {
+    let toast = document.getElementById("toast");
+    toast.innerText = message;
+    toast.classList.add("show");
+
+    setTimeout(() => {
+        toast.classList.add("hide");
+        setTimeout(() => {
+            toast.classList.remove("show", "hide");
+        }, 500);
+    }, duration);
+}
+// preload halaman awal
+
+
+document.addEventListener("DOMContentLoaded", function() {
+        let startButton = document.getElementById("startButton");
+        let progressBarPreload = document.querySelector(".progress-bar-preload");
+        let preloader = document.getElementById("preloader");
+        let preloadSound = new Audio("preload.wav"); // Pastikan file ini ada
+
+        // Fungsi untuk menjalankan preloader dan sound
+        function startPreloader() {
+            startButton.style.display = "none"; // Sembunyikan tombol GO
+            preloader.style.display = "flex"; // Tampilkan preloader
+            preloadSound.play(); // Mainkan sound effect
+            progressBarPreload.style.width = "100%"; // Jalankan progress bar
+
+            setTimeout(() => {
+                preloader.style.opacity = "0"; // Fade out preloader
+                setTimeout(() => {
+                    preloader.style.display = "none"; // Sembunyikan preloader
+                }, 500);
+            }, 8000); // Selesai dalam 10 detik
         }
-        
-   // Fungsi menyimpan dan menampilkan riwayat penarikan
-function kirimPenarikan() {
-    const namaDANA = document.getElementById('namaDANA').value.trim();
-    const noDANA = document.getElementById('noDANA').value.trim();
-    const jumlah = parseInt(document.getElementById('jumlah').value);
-    const saldo = parseInt(localStorage.getItem(prefixV2 + 'saldo') || 0);
+
+        // Jalankan preloader saat tombol GO ditekan
+        startButton.addEventListener("click", startPreloader);
+    });
+
+
+let inputs = document.querySelectorAll("input");
+inputs.forEach(input => {
+    input.addEventListener("focus", () => {
+        document.querySelector(".nav-bar").style.display = "none";
+    });
+    input.addEventListener("blur", () => {
+        setTimeout(() => {
+            document.querySelector(".nav-bar").style.display = "flex";
+        }, 300);
+    });
+});
+function goToHome() {
+    // Scroll ke atas dengan efek smooth
+    window.scrollTo({ top: 0, behavior: "smooth" });
+
+    // Sembunyikan semua elemen yang sedang terbuka
+    document.getElementById("withdrawReffSection").style.display = "none";  // Menutup Tarik Saldo Referral
+    document.getElementById("reffHistorySection").style.display = "none";  // Menutup Riwayat Penarikan Referral
+ document.getElementById("withdrawSection").style.display = "none";  // Menutup Tarik Saldo Referral
+    document.getElementById("historySection").style.display = "none";  // Menutup Riwayat Penarikan Referral
+
+}
+function withdraw() {
+    let withdrawSection = document.getElementById("withdrawSection");
+    
+    if (withdrawSection.style.display === "none" || withdrawSection.style.display === "") {
+        withdrawSection.style.display = "block"; // Tampilkan formulir
+    } else {
+        withdrawSection.style.display = "none"; // Sembunyikan formulir
+    }
+}
+ 
+function submitWithdraw() {
+    let nama = document.getElementById("namaDana").value;
+    let noDana = document.getElementById("noDana").value;
+    let jumlah = parseInt(document.getElementById("jumlahTarik").value);
+    let saldo = parseInt(localStorage.getItem("richbot_v4_saldo")) || 0;
 
     // Validasi input
-    if (namaDANA.length < 3 || noDANA.length < 10 || noDANA.length > 13 || jumlah % 1000 !== 0) {
-        alert('Data tidak valid! Pastikan semua input sesuai ketentuan.');
+    if (nama.length < 3) {
+        showToast("Nama DANA minimal 3 karakter!");
+        return;
+    }
+    if (noDana.length < 10 || noDana.length > 13) {
+        showToast("Nomor HP DANA harus 10-13 digit!");
+        return;
+    }
+    if (jumlah < 1 || jumlah % 1 !== 0) {
+        showToast("Jumlah harus minimal Rp.1000 dan kelipatan Rp.1000!");
         return;
     }
     if (jumlah > saldo) {
-        alert('Saldo tidak mencukupi!');
+        showToast("Saldo tidak mencukupi!");
         return;
     }
+
+    // Kurangi saldo
+    saldo -= jumlah;
+    localStorage.setItem("richbot_v4_saldo", saldo);
 
     // Ambil data pengguna dari localStorage
-      const nama = localStorage.getItem(prefixV2 + 'nama') || 'Tidak Ada Nama';
-    const username = localStorage.getItem(prefixV2 + 'username') || 'Tidak Ada Username';
-    const id = document.getElementById('id').textContent;
- // Hitung sisa saldo setelah penarikan
-    const sisaSaldo = saldo - jumlah;
-        
-    // Debugging: Cek apakah namaDANA tersimpan dengan benar
-    console.log('Nama DANA:', namaDANA);
+    let username = localStorage.getItem("richbot_v4_username") || "Unknown";
+    let id = localStorage.getItem("richbot_v4_id") || "Unknown";
 
-    // Update saldo
-    localStorage.setItem(prefixV2 + 'saldo', saldo - jumlah);
-    document.getElementById('saldo').textContent = saldo - jumlah;
+    // Simpan riwayat penarikan
+    saveHistory(nama, username, id, nama, noDana, jumlah, saldo);
 
-    // Simpan riwayat lengkap di localStorage
-    const riwayat = JSON.parse(localStorage.getItem(prefixV2 + 'riwayat') || '[]');
-    const waktu = new Date().toLocaleString('id-ID');
+    // Tampilkan notifikasi sukses
+    showToast(`Penarikan Rp${formatRupiah(jumlah)} berhasil!`);
 
-    riwayat.push({
-        namaDANA: namaDANA, // Pastikan namaDANA disimpan
-        noDANA,
-        jumlah,
-        waktu,
-        status: 'ss kirim ke admin',
-        nama,
-        username,
-        id,
-        brand:'rcbt v2.0'
-    });
+    // Kosongkan input setelah sukses
+    document.getElementById("namaDana").value = "";
+    document.getElementById("noDana").value = "";
+    document.getElementById("jumlahTarik").value = "";
 
-    localStorage.setItem(prefixV2 + 'riwayat', JSON.stringify(riwayat));
-    alert('Penarikan berhasil dikirim!');
-    tampilkanRiwayat();
+    // Perbarui tampilan saldo
+    document.getElementById("saldoCuan").innerText = formatRupiah(saldo);
+
+    // Sembunyikan form setelah sukses
+    document.getElementById("withdrawSection").style.display = "none";
 }
 
-// Fungsi menampilkan riwayat lengkap
-function tampilkanRiwayat() {
-    const riwayat = JSON.parse(localStorage.getItem(prefixV2 + 'riwayat') || '[]');
-    const riwayatList = document.getElementById('riwayat');
-    riwayatList.innerHTML = '';
+function closeWithdraw() {
+    document.getElementById("withdrawSection").style.display = "none";
+}
+
+// Fungsi untuk memformat angka ke Rupiah (Rp 1.000.000)
+function formatRupiah(angka) {
+    return "Rp" + angka.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+}
+
+// Fungsi untuk menyimpan riwayat penarikan ke localStorage
+function saveHistory(nama, username, id, namaDana, noDana, jumlah, sisaSaldo) {
+    let history = JSON.parse(localStorage.getItem("richbot_v4_history")) || [];
     
-    if (riwayat.length === 0) {
-        riwayatList.innerHTML = '<p>Belum ada riwayat penarikan.</p>';
+    let waktu = new Date();
+    let waktuFormat = `${waktu.getDate()}-${waktu.getMonth() + 1}-${waktu.getFullYear()} ${waktu.getHours()}:${waktu.getMinutes()}:${waktu.getSeconds()}`;
+
+    let newEntry = { nama, username, id, namaDana, noDana, jumlah, sisaSaldo, waktu: waktuFormat };
+    history.unshift(newEntry); // Tambahkan ke awal array agar terbaru di atas
+
+    localStorage.setItem("richbot_v4_history", JSON.stringify(history));
+
+    loadHistory(); // Perbarui tampilan riwayat
+}
+function hideHistory() {
+    document.getElementById("historySection").style.display = "none";
+}
+
+// Fungsi untuk memuat dan menampilkan riwayat penarikan
+function loadHistory() {
+    let history = JSON.parse(localStorage.getItem("richbot_v4_history")) || [];
+    let historyContainer = document.getElementById("historyContainer"); // Gunakan historyList
+    historyContainer.innerHTML = ""; // Kosongkan sebelum menambahkan
+
+    if (history.length === 0) {
+        historyContainer.innerHTML = "<p>📂 Tidak ada riwayat penarikan.</p>";
+        return;
+    }
+ 
+ 
+
+    history.forEach(item => {
+        let entry = document.createElement("div");
+        entry.classList.add("history-entry");
+        entry.innerHTML = `
+            <div class="history-top">
+            <div class="history-left">
+                <p>👤 <b>${item.nama}</b></p>
+            <p>📛 @${item.username}</p> <!-- Username berada di bawah nama -->
+                <p>🆔 ID: ${item.id}</p>
+            </div>
+     <hr>
+     <hr>
+            <div class="history-right">
+                <p>💳 ${item.namaDana}</p>
+                <p>📞 ${item.noDana}</p>
+                <p>💰 ${formatRupiah(item.jumlah)}</p>
+            </div>
+        </div>
+        <hr>
+        <div class="history-bottom">
+            <p>💸 Sisa Saldo: ${formatRupiah(item.sisaSaldo)}</p>
+            <p>⏳ ${item.waktu}</p>
+            <p>🔹 <b>rcbt v.4.0</b></p>
+        </div>
+        `;
+        historyContainer.appendChild(entry);
+    });
+}
+
+
+// Fungsi untuk menampilkan/menyembunyikan riwayat penarikan
+function viewHistory() {
+    let historySection = document.getElementById("historySection");
+    
+    if (historySection.style.display === "none" || historySection.style.display === "") {
+        historySection.style.display = "block";
+        loadHistory(); // Muat data saat dibuka
+    } else {
+        historySection.style.display = "none";
+    }
+}
+
+function shareToTelegram() {
+    let telegramUsername = "Hengki_galih"; // Ganti dengan username Telegram kamu
+    let telegramChatURL = `https://t.me/${telegramUsername}`;
+    window.open(telegramChatURL, "_blank");
+}
+
+function viewGuide() {
+    document.getElementById("guide-content").style.display = "block";
+}
+
+function closeGuide() {
+    document.getElementById("guide-content").style.display = "none";
+}
+
+ 
+
+// Kata sandi yang benar (ubah sesuai keinginan)
+const correctPassword = "12345";  
+
+// Buka popup kata sandi
+function openPasswordPopup() {
+    document.getElementById("passwordPopup").style.display = "block";
+}
+// Tutup popup kata sandi
+function closePopup() {
+    document.getElementById("passwordPopup").style.display = "none";
+}
+// Cek kata sandi
+function checkPassword() {
+    let inputPassword = document.getElementById("passwordInput").value;
+    
+    // Kosongkan kolom kata sandi setelah input
+    document.getElementById("passwordInput").value = "";
+
+    if (inputPassword === correctPassword) {
+        showToast("Akses Diberikan!");
+        closePopup();
+        openSettingsPopup();
+    } else {
+        showToast("Kata sandi salah!");
+        // Tidak perlu reset karena sudah dikosongkan setelah input
+    }
+}
+// Buka popup pengaturan setelah berhasil masuk
+function openSettingsPopup() {
+    document.getElementById("settingsPopup").style.display = "block";
+}
+// Tutup popup pengaturan
+function closeSettings() {
+    document.getElementById("settingsPopup").style.display = "none";
+}
+
+// Fungsi menerapkan pengaturan dari localStorage
+document.addEventListener("DOMContentLoaded", function () {
+    setTimeout(applyButtonSettings, 500); // Delay agar elemen tombol pasti ada
+});
+
+// Fungsi menerapkan pengaturan tombol dari localStorage
+function applyButtonSettings() {
+    const settings = [
+        { toggleId: "toggleAds", buttonId: "playButton", storageKey: "richbot_v4_adsStatus" },
+        { toggleId: "toggleWD", buttonId: "withdrawNavItem", storageKey: "richbot_v4_wdStatus" },
+        { toggleId: "toggleRoulette", buttonId: "rouletteNavItem", storageKey: "richbot_v4_rouletteStatus" }
+    ];
+
+    settings.forEach(({ toggleId, buttonId, storageKey }) => {
+        let toggle = document.getElementById(toggleId);
+        let button = document.getElementById(buttonId);
+        if (!toggle || !button) {
+            console.warn(`Elemen ${toggleId} atau ${buttonId} tidak ditemukan.`);
+            return;
+        }
+
+        let status = localStorage.getItem(storageKey);
+        console.log(`Muat ${storageKey}: ${status}`); // Debugging
+
+        if (status === "disabled") {
+            toggle.checked = true;
+            button.style.pointerEvents = "none";
+            button.style.opacity = "0.5";
+        } else {
+            toggle.checked = false;
+            button.style.pointerEvents = "auto";
+            button.style.opacity = "1";
+        }
+    });
+}
+
+// Fungsi menyimpan perubahan ke localStorage saat checkbox diubah
+function toggleFeature(toggleId, buttonId, storageKey) {
+    let toggle = document.getElementById(toggleId);
+    let button = document.getElementById(buttonId);
+    if (!toggle || !button) {
+        console.warn(`Gagal menemukan elemen ${toggleId} atau ${buttonId}`);
         return;
     }
 
-    riwayat.reverse().forEach(item => {
-        const riwayatItem = document.createElement('li');
-        riwayatItem.className = 'riwayat-item';
-        riwayatItem.innerHTML = `
-            <p>👤 <strong>Nama Akun:</strong> ${item.nama}</p>
-            <p>👑 <strong>Username:</strong> ${item.username}</p>
-            <p>🆔 <strong>ID:</strong> ${item.id}</p>
-            <p>💳 <strong>Nama DANA:</strong> ${item.namaDANA}</p> <!-- Pastikan ini tampil -->
-            <p>📞 <strong>Nomor DANA:</strong> ${item.noDANA}</p>
-            <p>💰 <strong>Jumlah:</strong> Rp ${item.jumlah}</p>
-            <p>🕒 <strong>Waktu:</strong> ${item.waktu}</p>
-            <p class="status"><strong>Status:</strong> ${item.status}</p>
-            <p>🔖 <strong>by:</strong> ${item.brand}</p>
-        `;
-        riwayatList.appendChild(riwayatItem);
-    });
+    let status = toggle.checked ? "disabled" : "enabled";
+    localStorage.setItem(storageKey, status);
+    console.log(`Simpan ${storageKey}: ${status}`); // Debugging
 
-    document.getElementById('historyList').style.display = 'block';
+    button.style.pointerEvents = (status === "disabled") ? "none" : "auto";
+    button.style.opacity = (status === "disabled") ? "0.5" : "1";
 }
 
-// Menampilkan riwayat saat halaman dimuat
-window.onload = function () {
-    ambilDataTelegram();
-    muatDataPendapatan();
-    resetTontonanSetiapHari();
-    tampilkanRiwayat();
-};
-        
-        // Fungsi menampilkan iklan
-function tampilkanIklan() {
-    if (typeof show_8996889 === "function") {
+
+ 
+// Buka modal roulette
+function openRoulette() {
+    document.getElementById("rouletteModal").style.display = "block";
+    checkReset();
+    updateBalance(0);
+}
+
+// Tutup modal roulette
+function closeRoulette() {
+    document.getElementById("rouletteModal").style.display = "none";
+}
+
+// Reset harian jika waktu sudah melewati 12 malam
+function checkReset() {
+    let lastReset = localStorage.getItem("richbot_v4_roulette_lastReset");
+    let today = new Date().toLocaleDateString();
+
+    if (lastReset !== today) {
+        localStorage.setItem("richbot_v4_roulette_spinCount", "0");
+        localStorage.setItem("richbot_v4_roulette_lastReset", today);
+    }
+}
+
+ // Perbarui tampilan jumlah spin
+function updateSpinCounter() {
+    let spinCount = parseInt(localStorage.getItem("richbot_v4_roulette_spinCount")) || 0;
+    document.getElementById("spin-counter").innerText = `${spinCount}/10`;
+}
+// Update saldo di tampilan
+function updateBalance(amount) {
+    let balance = parseInt(localStorage.getItem("richbot_v4_saldo")) || 0;
+    balance += amount;
+    localStorage.setItem("richbot_v4_saldo", balance);
+    
+    // Menampilkan saldo terbaru di halaman
+    document.getElementById("saldoCuan").innerText = `Rp ${balance}`;
+}
+ 
+
+
+
+// Konfigurasi sektor dengan warna & hadiah masing-masing
+const sectors = [
+    { color: "Hijau", reward: [7, 10, 13] },
+    { color: "Merah", reward: [10, 7, 13] },
+    { color: "Biru", reward: [8, 9, 15] },
+    { color: "Kuning", reward: [20] }
+];
+
+// **Atur probabilitas masing-masing sektor (dalam persen)**
+const probabilities = [45, 43, 10, 2]; // Hijau 40%, Merah 30%, Biru 20%, Kuning 10%
+
+const totalSectors = sectors.length;
+const sectorAngle = 360 / totalSectors;
+let isSpinning = false;
+let currentRotation = 0;
+
+// **Fungsi untuk memilih sektor berdasarkan probabilitas**
+function randomWeightedSector() {
+    let rand = Math.random() * 100;
+    let cumulative = 0;
+
+    for (let i = 0; i < probabilities.length; i++) {
+        cumulative += probabilities[i];
+        if (rand < cumulative) return i;
+    }
+    return probabilities.length - 1;
+}
+
+// **Easing untuk perlambatan alami**
+function easeOutExpo(t) {
+    return 1 - Math.pow(2, -10 * t);
+}
+
+function spinRoulette() {
+    if (isSpinning) return;
+
+    let spinCount = parseInt(localStorage.getItem("richbot_v4_roulette_spinCount")) || 0;
+    if (spinCount >= 10) {
+        showToast("Limit tercapai! Coba lagi besok.");
+        return;
+    }
+
+    isSpinning = true;
+    let spinButton = document.getElementById("spinButton");
+    spinButton.disabled = true;
+    let roulette = document.getElementById("rouletteWheel");
+
+    roulette.style.transition = "none";
+    roulette.style.transform = `rotate(${currentRotation}deg)`;
+
+    setTimeout(() => {
+        let baseRotation = (Math.random() * 4 + 8) * 360;
+        let randomSector = randomWeightedSector(); // 🎯 Pakai fungsi probabilitas
+        let finalAngle = 360 - (randomSector * sectorAngle);
+        let totalRotation = baseRotation + finalAngle;
+
+        let duration = 15000; // 5 detik agar efek perlambatan lebih terasa
+        let startTime = null;
+
+        function animateRotation(timestamp) {
+            if (!startTime) startTime = timestamp;
+            let elapsed = timestamp - startTime;
+            let progress = Math.min(elapsed / duration, 1);
+            let easedProgress = easeOutExpo(progress);
+
+            let currentAngle = easedProgress * totalRotation;
+            roulette.style.transform = `rotate(${currentAngle}deg)`;
+
+            if (elapsed < duration) {
+                requestAnimationFrame(animateRotation);
+            } else {
+                currentRotation = totalRotation % 360;
+                determineSector(randomSector);
+             
+             // 🔥 **Tambahkan reset agar spin bisa diulang**
+                isSpinning = false;
+                spinButton.disabled = false;
+                spinButton.style.opacity = "1"; // Kembalikan tampilan tombol
+                console.log("Spin bisa diulang sekarang!");
+             
+            }
+        }
+
+        requestAnimationFrame(animateRotation);
+    }, 50);
+}
+
+// Perbarui counter spin setiap selesai putar
+
+ 
+ function closeRoulette() {
+    document.getElementById("rouletteModal").style.display = "none";
+}
+ 
+ // Fungsi untuk menampilkan notifikasi reward
+// Fungsi untuk menampilkan notifikasi reward
+// Fungsi untuk menampilkan notifikasi reward
+function showRewardNotification(amount, sectorColor) {
+    let notification = document.getElementById("reward-notification");
+    let rewardText = document.getElementById("reward-text");
+
+    if (notification && rewardText) {
+        rewardText.innerText = `Selamat! Anda mendapatkan Rp.${amount}`;
+        notification.style.display = "block"; // Tampilkan notifikasi
+        notification.style.backgroundColor = sectorColor; // Warna latar sesuai sektor
+
+        // Simpan data sementara di localStorage
+        localStorage.setItem("richbot_v4_pending_reward", amount);
+    }
+}
+
+// Fungsi jika pengguna menekan tombol "Klaim"
+let isAdShowing = false; // Status apakah sedang klaim reward
+
+function claimReward() {
+    let storedReward = localStorage.getItem("richbot_v4_pending_reward");
+    let reward = storedReward ? parseInt(storedReward) : 0; // Ambil reward dari spin
+
+    if (reward > 0) {
+        if (isAdShowing) {
+            return; // Cegah spam klik
+        }
+
+        isAdShowing = true; // Tandai bahwa klaim sedang berlangsung
+
+        // Tampilkan iklan terlebih dahulu
         show_8996889({
             type: 'inApp',
             inAppSettings: {
-                frequency: 2,      // Muncul sekali per sesi
-                capping: 0.1,      // Jeda iklan 6 detik (0.1 menit)
-                interval: 30,      // Interval antar iklan 30 detik
-                timeout: 0,        // Waktu tunggu 5 detik
-                everyPage: false   // Tidak tampil di setiap halaman
+                frequency: 1,
+                capping: 0,
+                interval: 35,
+                timeout: 1,
+                everyPage: 1
             }
         });
+
+        // Tunggu iklan selesai sebelum lanjut klaim
+        setTimeout(() => {
+            let countdown = 15; // Hitungan mundur 21 detik
+            let rewardText = document.getElementById("reward-text");
+
+            if (rewardText) {
+                rewardText.innerText = `Menunggu ${countdown} detik...`;
+            }
+
+            let countdownInterval = setInterval(() => {
+                countdown--;
+
+                if (rewardText) {
+                    rewardText.innerText = `Menunggu ${countdown} detik...`;
+                }
+
+                if (countdown <= 0) {
+                    clearInterval(countdownInterval); // Hentikan timer
+
+                    // **Ambil ulang reward dari localStorage untuk memastikan tidak hilang**
+                    let finalReward = parseInt(localStorage.getItem("richbot_v4_pending_reward")) || 0;
+
+                    if (finalReward > 0) {
+                        updateBalance(finalReward); // Tambahkan saldo
+                        incrementSpinCount(); // Tambah jumlah spin
+                        showRewardNotification(finalReward); // Notifikasi reward berhasil
+                     playCoinSound();
+
+                      
+                        // Reset reward setelah diklaim
+                        localStorage.setItem("richbot_v4_pending_reward", "0");
+                    }
+
+                    isAdShowing = false; // Reset status klaim
+                 // Sembunyikan notifikasi klaim setelah timer habis
+let notification = document.getElementById("reward-notification");
+
+if (notification) {
+    notification.style.display = "none"; // Hilangkan pop-up notifikasi klaim
+ // Aktifkan kembali tombol spin setelah timer selesai
+ isSpinning = false;
+let spinButton = document.getElementById("spinButton");
+if (spinButton) {
+    spinButton.disabled = false; // Pastikan tombol bisa diklik kembali
+    spinButton.style.opacity = "1"; // Kembalikan tampilan tombol
+}
+}
+                }
+            }, 1000); // Jalankan setiap 1 detik
+        }, 5000); // Tunggu 5 detik untuk simulasi iklan selesai
     } else {
-        console.error("Iklan tidak tersedia.");
+        alert("Tidak ada reward yang bisa diklaim!");
+    }
+}
+// Fungsi jika pengguna menekan tombol "Lewati"
+function skipReward() {
+    incrementSpinCount(); // Tambah jumlah spin tanpa menambah saldo
+    closeRewardNotification(); // Tutup notifikasi reward
+    isSpinning = false; // Pastikan status spinning sudah selesai
+
+    // Ambil jumlah spin dari localStorage
+    let spinCount = parseInt(localStorage.getItem("richbot_v4_roulette_spinCount")) || 0;
+
+    // Cek apakah masih di bawah limit harian (500)
+    let spinButton = document.getElementById("spinButton");
+    if (spinCount < 10) {
+        spinButton.disabled = false;
+        spinButton.style.opacity = "1";
+        spinButton.removeAttribute("disabled"); // Paksa aktif kembali
+        console.log("Tombol Spin kembali aktif setelah skip!");
+    } else {
+        spinButton.innerText = "Limit tercapai!";
+        spinButton.disabled = true;
+        console.log("Tombol Spin tetap nonaktif karena limit tercapai.");
     }
 }
 
-// Tampilkan iklan saat halaman dimuat
-window.addEventListener('load', tampilkanIklan);    </script>
+// Fungsi untuk menutup notifikasi reward
+function closeRewardNotification() {
+    let notification = document.getElementById("reward-notification");
+    if (notification) {
+        notification.style.display = "none";
+    }
+}
 
-    </script>
+// Fungsi untuk menambah jumlah spin
+function incrementSpinCount() {
+    let spinCount = parseInt(localStorage.getItem("richbot_v4_roulette_spinCount")) || 0;
+    spinCount++;
+    localStorage.setItem("richbot_v4_roulette_spinCount", spinCount);
+    updateSpinCounter(); // Perbarui tampilan counter spin
+}
+
+// Fungsi memperbarui tampilan jumlah spin
+function updateSpinCounter() {
+    let spinCount = parseInt(localStorage.getItem("richbot_v4_roulette_spinCount")) || 0;
+    let spinCounter = document.getElementById("spin-counter");
+    if (spinCounter) {
+        spinCounter.innerText = `${spinCount}/10`;
+    }
+}
+// Fungsi menentukan sektor yang didapat
+// Fungsi menentukan sektor yang didapat
+function determineSector(index) {
+    let selectedSector = sectors[index];
+    let reward = selectedSector.reward[Math.floor(Math.random() * selectedSector.reward.length)];
+
+    // Simpan reward ke localStorage
+    localStorage.setItem("richbot_v4_pending_reward", reward);
+
+    // Tampilkan notifikasi klaim
+    let notification = document.getElementById("reward-notification");
+    let rewardText = document.getElementById("reward-text");
+    
+    if (notification && rewardText) {
+        rewardText.innerText = `Selamat! Anda mendapatkan Rp.${reward}. Klik klaim & tunggu 15 detik!`;
+        notification.style.display = "block";     
+    }   
+    // Ambil tombol Spin
+    let spinButton = document.getElementById("spinButton");
+    
+    if (spinCount >= 10) {
+        spinButton.innerText = "Limit tercapai!";
+        spinButton.disabled = true;
+    } else // Pastikan tombol spin bisa digunakan lagi
+setTimeout(() => {
+    isSpinning = false; // Reset agar bisa spin lagi
+    spinButton.disabled = false;
+    spinButton.style.opacity = "1";
+    spinButton.innerText = "Spin"; // Pastikan teks tombol kembali normal
+    console.log("Spin diaktifkan kembali!");
+}, 1000); // Tunggu 1 detik untuk memastikan animasi selesai
+
+    isSpinning = false; // **Reset agar bisa spin lagi**
+}
+
+// Cek status tombol saat halaman dimuat
+window.onload = function() {
+    checkReset();
+    updateBalance(0);
+    updateSpinCounter(); // Perbarui counter spin
+
+    let spinCount = parseInt(localStorage.getItem("richbot_v4_roulette_spinCount")) || 0;
+    let spinButton = document.getElementById("spinButton");
+
+    if (spinCount >= 10) {
+        spinButton.innerText = "Limit tercapai!";
+        spinButton.disabled = true;
+    }
+};
+
+// Fungsi untuk reset harian
+function checkReset() {
+    let lastReset = localStorage.getItem("richbot_v4_last_reset");
+    let today = new Date().toLocaleDateString();
+
+    if (lastReset !== today) {
+        localStorage.setItem("richbot_v4_roulette_spinCount", "0"); // Reset jumlah spin
+        localStorage.setItem("richbot_v4_last_reset", today);
+    }
+}
+ 
+    // In-App Interstitial 
+
+show_8996889({ 
+  type: 'inApp', 
+  inAppSettings: { 
+    frequency: 3, 
+    capping: 0.5, 
+    interval: 1, 
+    timeout: 2, 
+    everyPage: 1
+  } 
+})
+
+/*
+This value is decoded as follows:
+- show automatically 2 ads
+  within 0.1 hours (6 minutes)
+  with a 30-second interval between them
+  and a 5-second delay before the first one is shown.
+  The last digit, 0, means that the session will be saved when you navigate between pages.
+  If you set the last digit as 1, then at any transition between pages,
+  the session will be reset, and the ads will start again.
+*/
+
+// Panggil fungsi loadHistory saat halaman dimuat
+document.addEventListener("DOMContentLoaded", loadHistory);   
+ 
+ 
+ 
+ </script>
 
 </body>
-
 </html>
