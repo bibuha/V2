@@ -1099,13 +1099,18 @@ function initRichbot() {
     displayUserData();
     loadSaldo();
     cekLimit();
+    resetHarianOtomatis();
     resetHarian();
     loadHistory();
-    
+
     document.getElementById("saldoCuan").innerText = "Rp " + getSaldo();
     document.getElementById("reffCuan").innerText = "Rp " + getReffSaldo();
     setReffCount(getReffCount());
-    }
+
+    // Tambahan penting agar progress bar update
+    let currentAds = parseInt(localStorage.getItem("richbot_v2_adsWatched")) || 0;
+    updateProgressBar(currentAds);
+}
 
 function loadUserData() {
     let tg = window.Telegram.WebApp;
@@ -1286,7 +1291,7 @@ function resetHarianOtomatis() {
 }
 
 // **Jalankan reset otomatis saat halaman dimuat**
-resetHarianOtomatis();
+
 
 function showToast(message, duration = 3000) {
  let soundEffect = new Audio("warning.mp3"); // Muat file suara
