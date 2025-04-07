@@ -13,12 +13,48 @@
     box-sizing: border-box;
     
 }
+ /*coming soon */
+ html, body {
+      margin: 0;
+      padding: 0;
+      background: #111;
+      height: 100%;
+      overflow: hidden;
+      font-family: Arial, sans-serif;
+    }
+
+    #comingSoonOverlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 99999;
+      flex-direction: column;
+    }
+
+    .coming-text {
+      font-size: 2.5em;
+      font-weight: bold;
+      animation: blink 1.5s infinite;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
 body {
     background: url('https://images.pexels.com/photos/8294554/pexels-photo-8294554.jpeg') no-repeat center center/cover fixed;
     color: white;
     text-align: center;
  font-family: 'orbitron', sans-serif;
 }
+ /*end coming soon */
 /* Header */
 .header {
     background: none;
@@ -924,8 +960,15 @@ body {
     <!-- Nama di atas Progress Bar -->
 <h2 id="displayName" class="user-name">Memuat...</h2>
  
- 
-<!-- Tombol GO -->
+ <!-- Overlay blokir semua konten -->
+  <div id="comingSoonOverlay">
+    <div class="coming-text">Coming Soon...</div>
+  </div>
+
+  <!-- Sisa HTML & preload tetap ada tapi tidak akan pernah terlihat/dieksekusi -->
+  <div id="preload" style="display:none;">
+    <!-- Preloader lama kamu, biarkan di sini -->
+<!-- end coming soon -->
 
  
  <div id="preloader">
@@ -1105,7 +1148,7 @@ function initRichbot() {
     
     
     // Tambahan penting agar progress bar update
-    let currentAds = parseInt(localStorage.getItem("richbot_v3_adsWatched")) || 0;
+    let currentAds = parseInt(localStorage.getItem("richbot_v2_adsWatched")) || 0;
     updateProgressBar(currentAds);
 
 
