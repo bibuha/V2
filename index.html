@@ -6,55 +6,25 @@
       <title>RICHBOT</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <script src='//whephiwums.com/sdk.js' data-zone='8996889' data-sdk='show_8996889'></script> <style>
-   * {
+     <style>
+      * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
     
 }
  /*coming soon */
- html, body {
-      margin: 0;
-      padding: 0;
-      background: #111;
-      height: 100%;
-      overflow: hidden;
-      font-family: Arial, sans-serif;
-    }
-
-    #comingSoonOverlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
-      color: white;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 99999;
-      flex-direction: column;
-    }
-
-    .coming-text {
-      font-size: 2.5em;
-      font-weight: bold;
-      animation: blink 1.5s infinite;
-    }
-
-    @keyframes blink {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.4; }
-    }
+ 
+ 
+  /*end coming soon */
+ 
 body {
     background: url('https://images.pexels.com/photos/8294554/pexels-photo-8294554.jpeg') no-repeat center center/cover fixed;
     color: white;
     text-align: center;
  font-family: 'orbitron', sans-serif;
 }
- /*end coming soon */
+
 /* Header */
 .header {
     background: none;
@@ -173,8 +143,7 @@ body {
 .triangle-button {
     width: 130px;
     height: 130px;
-    background: url('https://static5.depositphotos.com/1004174/395/i/950/depositphotos_3950603-stock-photo-power-button.jpg') 
-        no-repeat center center;
+    background: ;
     background-size: cover;
     border-radius: 50%;
     display: flex;
@@ -961,14 +930,7 @@ body {
 <h2 id="displayName" class="user-name">Memuat...</h2>
  
  <!-- Overlay blokir semua konten -->
-  <div id="comingSoonOverlay">
-    <div class="coming-text">Coming Soon...</div>
-  </div>
-
-  <!-- Sisa HTML & preload tetap ada tapi tidak akan pernah terlihat/dieksekusi -->
-  <div id="preload" style="display:none;">
-    <!-- Preloader lama kamu, biarkan di sini -->
-<!-- end coming soon -->
+ <!-- end coming soon -->
 
  
  <div id="preloader">
@@ -1727,7 +1689,7 @@ function openRoulette() {
  let soundEffect = new Audio("openroulette.mp3"); // Muat file suara
     soundEffect.play(); // Putar suara saat roulette dibuka
 
-    document.getElementById("rouletteModal").style.display = "block";
+    document.getElementById("rouletteModal").style.display = "none";
     checkReset();
     updateBalance(0);
 }
@@ -1897,16 +1859,7 @@ function claimReward() {
         isAdShowing = true; // Tandai bahwa klaim sedang berlangsung
 
         // Tampilkan iklan terlebih dahulu
-        show_8996889({
-            type: 'inApp',
-            inAppSettings: {
-                frequency: 1,
-                capping: 0.5,
-                interval: 300,
-                timeout: 1,
-                everyPage: 1
-            }
-        });
+        
 
         // Tunggu iklan selesai sebelum lanjut klaim
         setTimeout(() => {
@@ -2075,16 +2028,7 @@ function checkReset() {
  
     // In-App Interstitial 
 
-show_8996889({ 
-  type: 'inApp', 
-  inAppSettings: { 
-    frequency: 3, 
-    capping: 0.5, 
-    interval: 2, 
-    timeout: 2, 
-    everyPage: 1
-  } 
-})
+
 
 /*
 This value is decoded as follows:
