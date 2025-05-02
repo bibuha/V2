@@ -6,7 +6,15 @@
       <title>RICHBOT</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <meta name="coinzilla" content="e6704c874e1375b87bb76874cc40f4d7" />
+    <script src="https://sad.adsgram.ai/js/sad.min.js"></script>
+    <script id="aclib" type="text/javascript" src="//acscdn.com/script/aclib.js"></script>
+    <script type="text/javascript">
+    aclib.runAutoTag({
+        zoneId: 'k1j4xtwx8i',
+    });
+</script>
+
+    
      <style>
       * {
     margin: 0;
@@ -932,7 +940,13 @@ body {
  
  <!-- Overlay blokir semua konten -->
  <!-- end coming soon -->
-
+<div id="iklanAdcash">
+  <script type="text/javascript">
+    aclib.runBanner({
+      zoneId: '9887974',
+    });
+  </script>
+</div>
  
  <div id="preloader">
   <button id="startButton">GO</button>
@@ -960,6 +974,7 @@ body {
         
     <div id="frame" style="width:120px; height:auto;"><iframe data-aa='2392498' src='//ad.a-ads.com/2392498?size=120x60' style='width:120px; height:60px; border:0px; padding:0; overflow:hidden; background-color: transparent;'></iframe><a style="display: block; text-align: right; font-size: 12px;" id="preview-link" href="https://aads.com/campaigns/new/?source_id=2392498&source_type=ad_unit&partner=2392498">Advertise here</a></div>
  
+
  <!-- Overlay untuk background gelap -->
 <div id="overlay" onclick="hideAllSections()"></div>
 
@@ -1117,8 +1132,7 @@ function initRichbot() {
 
 
     document.getElementById("saldoCuan").innerText = "Rp " + getSaldo();
-    document.getElementById("reffCuan").innerText = "Rp " + getReffSaldo();
-    setReffCount(getReffCount());
+    
 }
 
 function loadUserData() {
@@ -1182,23 +1196,34 @@ function getSaldo() {
     startSpin(); // Fungsi spin berjalan seperti biasa
 });
  
+const AdController = window.Adsgram.init({
+  blockId: "10452",
+  
+  debug: true,
+  debugBannerType: "FullscreenMedia"
+});
+        
 function watchAd() {
+    console.log("watchAd() dipanggil");
+
     let saldoCuan = document.getElementById("saldoCuan");
     let playButton = document.getElementById("playButton");
 
     let currentAds = parseInt(localStorage.getItem("richbot_v2_adsWatched")) || 0;
     let currentCuan = getSaldo();
 
-    if (currentAds < maxAds && !timerRunning) {
-        if (typeof show_8996889 === 'function') {
-            show_8996889(); // Menampilkan iklan
+    console.log("currentAds:", currentAds, "maxAds:", maxAds, "timerRunning:", timerRunning);
 
-            // Setelah iklan diputar, mulai timer
+    if (currentAds < maxAds && !timerRunning) {
+        AdController.showAd().then(() => {
+            console.log("Iklan ditonton, mulai timer");
             startTimer(playButton, saldoCuan, currentAds, currentCuan);
-        } else {
-            showToast("⚠️Iklan tidak tersedia saat ini. Silakan coba lagi nanti");
-        }
+        }).catch((err) => {
+            console.warn("Iklan gagal tampil", err);
+            showToast("⚠️Iklan tidak tersedia saat ini.");
+        });
     } else {
+        console.log("Limit tercapai atau timer masih jalan");
         showToast("⚠️Limit iklan sudah tercapai hari ini");
     }
 }
